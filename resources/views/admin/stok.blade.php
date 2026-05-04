@@ -217,7 +217,7 @@
                 </button>
             </div>
             
-            <form action="{{ route('admin.stock.update', ['product' => ':product_id']) }}" method="POST" class="p-6 space-y-5" id="stockUpdateForm" x-ref="stockForm">
+            <form :action="'{{ url('/admin/stok') }}/' + productId" method="POST" class="p-6 space-y-5" id="stockUpdateForm" x-ref="stockForm">
                 @csrf
                 @method('PATCH')
                 <input type="hidden" name="product_id" x-model="productId">

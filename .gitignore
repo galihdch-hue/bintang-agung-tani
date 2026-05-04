@@ -17,7 +17,11 @@
 /public/hot
 /public/storage
 /storage/*.key
-/storage/pail
+/storage/framework/cache/data/*
+/storage/framework/sessions/*
+/storage/framework/testing/*
+/storage/framework/views/*.php
+/storage/logs/*.log
 /vendor
 Homestead.json
 Homestead.yaml
