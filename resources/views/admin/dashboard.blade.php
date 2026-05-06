@@ -11,7 +11,7 @@
             <nav class="flex text-sm text-gray-500 mb-2" aria-label="Breadcrumb">
                 <ol class="inline-flex items-center space-x-1 md:space-x-2">
                     <li class="inline-flex items-center">
-                        <span class="text-gray-900 font-medium">Dashboard Admin</span>
+                        <span class="text-gray-900 font-medium">Dashboard Administrator</span>
                     </li>
                 </ol>
             </nav>
