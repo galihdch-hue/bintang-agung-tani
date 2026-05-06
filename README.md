@@ -242,4 +242,5 @@ Proyek ini menggunakan lisensi MIT.
 
 ---
 
-Bintang Agung Tani - Modernizing Agricultural Commerce
+Bintang Agung Tani
+
