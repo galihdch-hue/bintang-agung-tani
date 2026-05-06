@@ -27,13 +27,13 @@
 
     <!-- Summary Stats -->
     <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <div class="card p-4 hover:-translate-y-1 transition-transform cursor-pointer border-b-4 border-b-emerald-500 bg-emerald-50/10">
+        <div class="card p-4 hover:-translate-y-1 transition-transform cursor-pointer border-b-4 border-b-primary-500 bg-primary-50/10">
             <div class="flex items-center justify-between">
                 <div>
-                    <p class="text-xs font-bold text-emerald-600 uppercase tracking-wider mb-1">Metode Aktif</p>
+                    <p class="text-xs font-bold text-primary-600 uppercase tracking-wider mb-1">Metode Aktif</p>
                     <h3 class="text-2xl font-black text-gray-900">{{ $paymentMethods->where('is_active', true)->count() }}</h3>
                 </div>
-                <div class="w-10 h-10 rounded-xl bg-emerald-100 text-emerald-600 flex items-center justify-center">
+                <div class="w-10 h-10 rounded-xl bg-primary-100 text-primary-600 flex items-center justify-center">
                     <i class="ph ph-check-circle ph-duotone w-5 h-5"></i>
                 </div>
             </div>
@@ -111,7 +111,7 @@
                         <td class="px-6 py-4 text-gray-700">{{ $method->account_name }}</td>
                         <td class="px-6 py-4 text-center">
                             @if($method->is_active)
-                                <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold border bg-emerald-100 text-emerald-700 border-emerald-200">
+                                <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold border bg-primary-100 text-primary-700 border-primary-200">
                                     <i class="ph ph-check-circle w-3.5 h-3.5"></i>
                                     Aktif
                                 </span>

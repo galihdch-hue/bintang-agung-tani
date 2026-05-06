@@ -29,9 +29,9 @@
     </div>
 
     <!-- Status Banner -->
-    <div class="card p-4 {{ $paymentProof->isPending() ? 'bg-amber-50 border-amber-200' : ($paymentProof->isVerified() ? 'bg-emerald-50 border-emerald-200' : 'bg-red-50 border-red-200') }}">
+    <div class="card p-4 {{ $paymentProof->isPending() ? 'bg-amber-50 border-amber-200' : ($paymentProof->isVerified() ? 'bg-primary-50 border-primary-200' : 'bg-red-50 border-red-200') }}">
         <div class="flex items-center gap-3">
-            <div class="w-12 h-12 rounded-xl {{ $paymentProof->isPending() ? 'bg-amber-100 text-amber-600' : ($paymentProof->isVerified() ? 'bg-emerald-100 text-emerald-600' : 'bg-red-100 text-red-600') }} flex items-center justify-center">
+            <div class="w-12 h-12 rounded-xl {{ $paymentProof->isPending() ? 'bg-amber-100 text-amber-600' : ($paymentProof->isVerified() ? 'bg-primary-100 text-primary-600' : 'bg-red-100 text-red-600') }} flex items-center justify-center">
                 @if($paymentProof->isPending())
                     <i class="ph ph-clock text-2xl"></i>
                 @elseif($paymentProof->isVerified())
@@ -42,7 +42,7 @@
             </div>
             <div>
                 <p class="text-sm text-gray-500">Status Verifikasi</p>
-                <p class="text-xl font-bold {{ $paymentProof->isPending() ? 'text-amber-700' : ($paymentProof->isVerified() ? 'text-emerald-700' : 'text-red-700') }}">
+                <p class="text-xl font-bold {{ $paymentProof->isPending() ? 'text-amber-700' : ($paymentProof->isVerified() ? 'text-primary-700' : 'text-red-700') }}">
                     {{ $paymentProof->getStatusLabel() }}
                 </p>
             </div>
@@ -181,9 +181,9 @@
 
             <!-- Verifikasi Actions -->
             @if($paymentProof->isPending())
-                <div class="card p-0 overflow-hidden border-emerald-100">
-                    <div class="bg-gradient-to-r from-emerald-50/40 to-emerald-50/10 px-6 py-4 border-b border-emerald-100 flex items-center gap-2">
-                        <i class="ph ph-check-circle w-5 h-5 text-emerald-600 ph-fill"></i>
+                <div class="card p-0 overflow-hidden border-primary-100">
+                    <div class="bg-gradient-to-r from-primary-50/40 to-primary-50/10 px-6 py-4 border-b border-primary-100 flex items-center gap-2">
+                        <i class="ph ph-check-circle w-5 h-5 text-primary-600 ph-fill"></i>
                         <h2 class="text-sm font-bold text-gray-900 uppercase tracking-wide">Verifikasi Pembayaran</h2>
                     </div>
                     <div class="p-6 space-y-6">
@@ -194,7 +194,7 @@
                                 <label for="verify_notes" class="block text-sm font-semibold text-gray-900">Catatan Verifikasi (opsional)</label>
                                 <textarea name="notes" id="verify_notes" rows="3" class="form-input w-full" placeholder="Tambahkan catatan untuk verifikasi ini..."></textarea>
                             </div>
-                            <button type="submit" class="btn-primary w-full mt-4 h-12 shadow-lg bg-emerald-600 hover:bg-emerald-700 border-emerald-600">
+                            <button type="submit" class="btn-primary w-full mt-4 h-12 shadow-lg bg-primary-600 hover:bg-primary-700 border-primary-600">
                                 <i class="ph ph-check-circle w-5 h-5 mr-1"></i>
                                 Verifikasi Pembayaran
                             </button>

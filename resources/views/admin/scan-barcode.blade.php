@@ -3,121 +3,153 @@
 @section('title', 'Scan QR Pengambilan')
 
 @section('content')
-<div class="container-main space-y-6 fade-in" id="scan-container">
-    <!-- Header -->
-    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
-        <div>
-            <nav class="flex text-sm text-gray-500 mb-2" aria-label="Breadcrumb">
-                <ol class="inline-flex items-center space-x-1 md:space-x-2">
-                    <li><a href="/admin/dashboard" class="hover:text-primary-600 transition-colors">Dashboard</a></li>
-                    <li><div class="flex items-center"><i class="ph ph-caret-right mx-1 text-gray-400 w-3 h-3"></i><span class="text-gray-900 font-medium">Scan QR</span></div></li>
-                </ol>
-            </nav>
-            <h1 class="heading-page text-gray-900">Pindai QR Pengambilan</h1>
-            <p class="text-gray-500 mt-1 body-small">Arahkan kamera ke QR code pesanan pelanggan untuk verifikasi otomatis.</p>
-        </div>
-        <a href="/admin/dashboard" class="btn-secondary h-10 px-4 shadow-subtle">
-            <i class="ph ph-arrow-left ph-bold w-4 h-4"></i>
-            <span class="hidden sm:inline">Kembali Dashboard</span>
-        </a>
+<div class="p-4 md:p-8 max-w-5xl mx-auto">
+    <!-- Header Section -->
+    <div class="mb-10">
+        <nav class="flex mb-3" aria-label="Breadcrumb">
+            <ol class="flex items-center space-x-2 text-[10px] font-bold text-gray-400 uppercase tracking-[0.2em]">
+                <li>Transaksi</li>
+                <li class="flex items-center space-x-2">
+                    <i class="ph ph-caret-right text-[10px]"></i>
+                    <span class="text-primary-600">Scan QR</span>
+                </li>
+            </ol>
+        </nav>
+        <h1 class="text-4xl font-black text-gray-900 tracking-tight font-outfit">Scan QR Pengambilan</h1>
+        <p id="instruction-text" class="text-sm text-gray-500 mt-2 font-medium">Arahkan kamera ke QR code pelanggan untuk memproses pengambilan pesanan</p>
     </div>
 
-    <!-- Scanner Container -->
-    <div class="card-elevated overflow-hidden">
-        <!-- Header Strip -->
-        <div class="px-6 py-4 bg-gradient-to-r from-gray-50 to-white border-b border-gray-100 flex items-center justify-between">
-            <div class="flex items-center gap-2.5">
-                <div class="relative flex h-2.5 w-2.5" id="status-indicator">
-                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
-                    <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-red-500"></span>
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <!-- Scanner Main Area -->
+        <div class="lg:col-span-2">
+            <div class="bg-black rounded-[2.5rem] overflow-hidden shadow-2xl relative aspect-video md:aspect-square lg:aspect-video flex items-center justify-center border-8 border-white group" id="scan-container">
+                <!-- Overlay Controls (Floating) -->
+                <div class="absolute top-0 left-0 right-0 p-6 z-[110] flex items-center justify-between pointer-events-none">
+                    <div class="flex items-center gap-3 pointer-events-auto">
+                        <div class="bg-black/40 backdrop-blur-md px-4 py-2 rounded-full border border-white/20 flex items-center gap-3">
+                            <div class="w-2.5 h-2.5 rounded-full bg-red-500 animate-pulse" id="status-pulse"></div>
+                            <span class="text-xs font-bold text-white uppercase tracking-widest" id="status-text">Kamera Siap</span>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center gap-2 pointer-events-auto">
+                        <select id="camera-select" class="bg-black/40 backdrop-blur-md text-xs font-bold text-white border border-white/20 rounded-xl px-4 py-2.5 focus:outline-none h-11 appearance-none min-w-[140px]">
+                            <option value="">Pilih Kamera...</option>
+                        </select>
+                    </div>
                 </div>
-                <span class="text-xs font-bold text-gray-600 tracking-wide uppercase" id="status-text">Kamera Siap</span>
+
+                <!-- Scanner Area -->
+                <div class="absolute inset-0 w-full h-full" id="scanner-area">
+                    <div id="qr-reader" class="w-full h-full [&_video]:object-cover [&_video]:w-full [&_video]:h-full"></div>
+                    
+                    <!-- HUD Overlay -->
+                    <div class="absolute inset-0 z-10 flex items-center justify-center pointer-events-none" id="hud-overlay">
+                        <div class="w-64 h-64 md:w-80 md:h-80 relative">
+                            <div class="absolute top-0 left-0 w-16 h-16 border-t-4 border-l-4 border-primary-500 rounded-tl-3xl shadow-[0_0_15px_rgba(16,185,129,0.3)]"></div>
+                            <div class="absolute top-0 right-0 w-16 h-16 border-t-4 border-r-4 border-primary-500 rounded-tr-3xl shadow-[0_0_15px_rgba(16,185,129,0.3)]"></div>
+                            <div class="absolute bottom-0 left-0 w-16 h-16 border-b-4 border-l-4 border-primary-500 rounded-bl-3xl shadow-[0_0_15_rgba(16,185,129,0.3)]"></div>
+                            <div class="absolute bottom-0 right-0 w-16 h-16 border-b-4 border-r-4 border-primary-500 rounded-br-3xl shadow-[0_0_15px_rgba(16,185,129,0.3)]"></div>
+                            
+                            <!-- Scan Line Animation -->
+                            <div class="absolute inset-x-8 top-0 h-1 bg-gradient-to-r from-transparent via-primary-400 to-transparent shadow-[0_0_20px_rgba(16,185,129,0.8)] animate-[scan_3s_ease-in-out_infinite]" id="scan-line"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Status Overlays -->
+                <div id="status-overlay" class="absolute inset-0 z-[120] hidden items-center justify-center p-8 backdrop-blur-2xl bg-black/40 transition-all duration-500">
+                    <!-- Success State -->
+                    <div id="success-state" class="hidden flex flex-col items-center text-center max-w-xs">
+                        <div class="w-24 h-24 bg-primary-500 rounded-full flex items-center justify-center mb-6 shadow-2xl animate-bounce">
+                            <i class="ph ph-check ph-bold text-4xl text-white"></i>
+                        </div>
+                        <h2 class="text-3xl font-black text-white mb-2 font-outfit uppercase tracking-tight">Berhasil!</h2>
+                        <p class="text-white/80 text-lg mb-8 font-medium" id="order-number-display">ID: BAT-XXXXXX</p>
+                        <div class="flex flex-col gap-3 w-full">
+                            <a href="#" id="view-order-link" class="bg-white text-black py-4 rounded-2xl font-black uppercase tracking-widest hover:scale-105 transition-transform text-sm">
+                                Detail Pesanan
+                            </a>
+                            <button onclick="resetScanner()" class="bg-white/10 text-white py-4 rounded-2xl font-black uppercase tracking-widest border border-white/20 hover:bg-white/20 transition-all text-sm">
+                                Scan Lagi
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Error State -->
+                    <div id="error-state" class="hidden flex flex-col items-center text-center max-w-xs">
+                        <div class="w-24 h-24 bg-red-500 rounded-full flex items-center justify-center mb-6 shadow-2xl">
+                            <i class="ph ph-x ph-bold text-4xl text-white"></i>
+                        </div>
+                        <h2 class="text-3xl font-black text-white mb-2 font-outfit uppercase tracking-tight">Gagal</h2>
+                        <p class="text-white/80 text-lg mb-8 font-medium" id="error-message-display">Kode QR tidak valid.</p>
+                        <button onclick="resetScanner()" class="w-full bg-white text-black py-4 rounded-2xl font-black uppercase tracking-widest hover:scale-105 transition-transform text-sm">
+                            Coba Lagi
+                        </button>
+                    </div>
+                </div>
             </div>
 
-            <div class="flex items-center gap-2">
-                <select id="camera-select" class="text-xs font-medium border border-gray-200 rounded-lg px-3 py-2 bg-white focus:outline-none focus:border-primary-400 focus:ring-2 focus:ring-primary-100 transition-all">
-                    <option value="">Pilih Kamera...</option>
-                </select>
-                <button id="start-btn" class="btn-primary h-9 px-4 text-xs shadow-soft">
+            <!-- Scanner Controls Bar -->
+            <div class="mt-6 flex items-center justify-center gap-4">
+                <button id="start-btn" class="flex-1 max-w-[200px] bg-primary-600 hover:bg-primary-700 text-white py-4 rounded-2xl font-black uppercase tracking-[0.2em] transition-all shadow-xl shadow-primary-200 flex items-center justify-center gap-3 active:scale-95">
+                    <i class="ph ph-play-fill"></i>
                     Mulai Scan
                 </button>
-                <button id="stop-btn" class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg text-xs font-semibold transition-all shadow-soft hidden">
+                <button id="stop-btn" class="flex-1 max-w-[200px] bg-red-600 hover:bg-red-700 text-white py-4 rounded-2xl font-black uppercase tracking-[0.2em] transition-all shadow-xl shadow-red-200 hidden flex items-center justify-center gap-3 active:scale-95">
+                    <i class="ph ph-stop-fill"></i>
                     Berhenti
                 </button>
             </div>
         </div>
 
-        <!-- Camera Scanner Area -->
-        <div class="bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 relative flex flex-col items-center justify-center min-h-[500px]" id="scanner-area">
-
-            <div class="absolute inset-0 opacity-5" style="background-image: url('data:image/svg+xml,%3Csvg viewBox=%220 0 200 200%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cfilter id=%22noiseFilter%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%220.65%22 numOctaves=%223%22 stitchTiles=%22stitch%22/%3E%3C/filter%3E%3Crect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23noiseFilter)%22/%3E%3C/svg%3E');"></div>
-
-            <!-- QR Scanner Element -->
-            <div class="relative">
-                <div id="qr-reader" class="w-[280px] h-[280px] rounded-2xl overflow-hidden bg-black shadow-lg border-2 border-primary-500/30"></div>
-                <div class="absolute -inset-4 border-2 border-dashed border-primary-500/20 rounded-3xl -z-10"></div>
-            </div>
-
-            <p class="text-white/70 mt-6 text-sm font-medium relative z-10 bg-black/50 px-5 py-2.5 rounded-full border border-white/20" id="instruction-text">
-                <i class="ph ph-qr-code w-4 h-4 inline mr-1.5"></i>
-                Pilih kamera dan klik "Mulai Scan"
-            </p>
-
-            <!-- Manual Input Fallback -->
-            <div class="mt-8 w-full max-w-md px-6">
-                <form id="manual-form" action="{{ route('admin.scan-qr.scan') }}" method="POST" class="flex gap-2">
-                    @csrf
-                    <input type="text" name="qr_data" id="manual-input" placeholder="Atau masukkan kode manual..."
-                        class="flex-1 px-4 py-2.5 bg-white/10 border border-white/20 rounded-xl text-white placeholder-white/40 text-sm focus:outline-none focus:border-primary-400 focus:ring-2 focus:ring-primary-500/30 transition-all">
-                    <button type="submit" class="bg-white/20 hover:bg-white/30 text-white px-5 py-2.5 rounded-xl text-sm font-semibold transition-all border border-white/30">
-                        <i class="ph ph-magnifying-glass w-4 h-4"></i>
+        <!-- Sidebar / Manual Input -->
+        <div class="flex flex-col gap-6">
+            <div class="bg-white p-8 rounded-[2.5rem] border border-gray-100 shadow-xl">
+                <div class="flex items-center gap-3 mb-6">
+                    <div class="w-10 h-10 rounded-xl bg-primary-50 text-primary-600 flex items-center justify-center">
+                        <i class="ph ph-keyboard text-xl"></i>
+                    </div>
+                    <h3 class="font-black text-gray-900 uppercase tracking-widest text-sm">Input Manual</h3>
+                </div>
+                
+                <form id="manual-form" class="space-y-4">
+                    <div>
+                        <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2 block">Kode Pesanan / QR Data</label>
+                        <input type="text" name="qr_data" id="manual-input" placeholder="Contoh: BAT-12345"
+                            class="w-full px-5 py-4 bg-gray-50 border border-gray-100 rounded-2xl text-gray-900 placeholder-gray-400 text-sm focus:outline-none focus:border-primary-500 focus:ring-4 focus:ring-primary-500/10 transition-all font-bold">
+                    </div>
+                    <button type="submit" class="w-full bg-gray-900 text-white py-4 rounded-2xl font-black uppercase tracking-widest hover:bg-black transition-all active:scale-95 flex items-center justify-center gap-2">
+                        <i class="ph ph-magnifying-glass font-bold"></i>
+                        Verifikasi
                     </button>
                 </form>
             </div>
-        </div>
 
-        <!-- Success State -->
-        <div id="success-state" class="hidden bg-gradient-to-br from-primary-500 to-emerald-600 p-12 text-center text-white min-h-[500px] flex flex-col items-center justify-center relative overflow-hidden">
-
-            <div class="absolute top-0 right-0 -mt-32 -mr-32 w-96 h-96 bg-white opacity-5 rounded-full"></div>
-            <div class="absolute bottom-0 left-0 -mb-32 -ml-32 w-96 h-96 bg-black opacity-5 rounded-full"></div>
-
-            <div class="w-32 h-32 bg-white rounded-full flex items-center justify-center mb-6 shadow-2xl relative z-10">
-                <i class="ph ph-check-circle ph-fill w-16 h-16 text-primary-600 animate-[bounce_0.5s_ease-in-out_2]"></i>
+            <div class="bg-primary-600 p-8 rounded-[2.5rem] text-white shadow-xl shadow-primary-100 relative overflow-hidden">
+                <div class="relative z-10">
+                    <h3 class="font-black text-lg mb-2 font-outfit uppercase tracking-tight">Tips Pindaian</h3>
+                    <ul class="space-y-3 text-sm text-white/80 font-medium">
+                        <li class="flex items-start gap-2">
+                            <i class="ph ph-check-circle-fill mt-1"></i>
+                            Pastikan pencahayaan cukup
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <i class="ph ph-check-circle-fill mt-1"></i>
+                            Posisikan QR di tengah bingkai
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <i class="ph ph-check-circle-fill mt-1"></i>
+                            Hindari pantulan cahaya pada layar
+                        </li>
+                    </ul>
+                </div>
+                <i class="ph ph-qr-code absolute -right-8 -bottom-8 text-9xl text-white/10 rotate-12"></i>
             </div>
-
-            <h2 class="text-2xl font-black tracking-tight mb-2 relative z-10">Verifikasi Berhasil!</h2>
-            <p class="text-white/90 text-base mb-8 relative z-10 font-medium">QR Terdaftar atas ID <strong class="font-mono bg-black/20 px-3 py-1 rounded-lg ml-1 text-white shadow-inner" id="order-number">-</strong></p>
-
-            <div class="flex flex-col sm:flex-row gap-3 relative z-10">
-                <a href="/admin/pesanan" id="view-order-link" class="bg-white text-primary-600 px-8 py-3 rounded-xl font-bold hover:bg-gray-50 transition-all shadow-lg flex items-center justify-center gap-2">
-                    <i class="ph ph-eye ph-bold w-5 h-5"></i> Lihat Pesanan
-                </a>
-                <button onclick="resetScanner()" class="px-8 py-3 rounded-xl font-bold text-white border-2 border-white/40 hover:bg-white/10 transition-all flex items-center justify-center gap-2">
-                    <i class="ph ph-arrows-clockwise ph-bold w-5 h-5"></i> Scan Ulang
-                </button>
-            </div>
-        </div>
-
-        <!-- Error State -->
-        <div id="error-state" class="hidden bg-gradient-to-br from-red-500 to-red-600 p-12 text-center text-white min-h-[500px] flex flex-col items-center justify-center relative overflow-hidden">
-
-            <div class="absolute top-0 right-0 -mt-32 -mr-32 w-96 h-96 bg-white opacity-5 rounded-full"></div>
-
-            <div class="w-32 h-32 bg-white rounded-full flex items-center justify-center mb-6 shadow-2xl relative z-10">
-                <i class="ph ph-x-circle ph-fill w-16 h-16 text-red-600"></i>
-            </div>
-
-            <h2 class="text-2xl font-black tracking-tight mb-2 relative z-10">QR Tidak Valid!</h2>
-            <p class="text-white/90 text-base mb-8 relative z-10 font-medium" id="error-message">Data QR code tidak ditemukan.</p>
-
-            <button onclick="resetScanner()" class="px-8 py-3 rounded-xl font-bold text-white border-2 border-white/40 hover:bg-white/10 transition-all flex items-center justify-center gap-2 relative z-10">
-                <i class="ph ph-arrows-clockwise ph-bold w-5 h-5"></i> Coba Lagi
-            </button>
         </div>
     </div>
 
-    <!-- Hidden Form for AJAX Submission -->
+    <!-- Hidden Submit Form -->
     <form id="scan-form" action="{{ route('admin.scan-qr.scan') }}" method="POST" class="hidden">
         @csrf
         <input type="hidden" name="qr_data" id="qr-data-input">
@@ -128,21 +160,27 @@
 <script>
     let html5QrCode;
     let isScanning = false;
-    let currentCamera = null;
 
-    // Get DOM elements
+    // DOM Elements
     const cameraSelect = document.getElementById('camera-select');
     const startBtn = document.getElementById('start-btn');
     const stopBtn = document.getElementById('stop-btn');
-    const scannerArea = document.getElementById('scanner-area');
+    const statusText = document.getElementById('status-text');
+    const statusPulse = document.getElementById('status-pulse');
+    const instructionText = document.getElementById('instruction-text');
+    const statusOverlay = document.getElementById('status-overlay');
     const successState = document.getElementById('success-state');
     const errorState = document.getElementById('error-state');
-    const statusIndicator = document.getElementById('status-indicator');
-    const statusText = document.getElementById('status-text');
-    const instructionText = document.getElementById('instruction-text');
+    const hudOverlay = document.getElementById('hud-overlay');
 
-    // Initialize camera list
+    // Init Cameras
     async function initCameras() {
+        if (typeof Html5Qrcode === 'undefined') {
+            console.error('Html5Qrcode library not loaded');
+            instructionText.textContent = 'Gagal memuat library scanner.';
+            return;
+        }
+
         try {
             const devices = await Html5Qrcode.getCameras();
             if (devices && devices.length) {
@@ -153,200 +191,145 @@
                     option.text = device.label || `Kamera ${index + 1}`;
                     cameraSelect.appendChild(option);
                 });
-                
-                if (devices.length > 0) {
-                    cameraSelect.value = devices[0].id;
-                }
+                cameraSelect.value = devices[0].id;
+            } else {
+                instructionText.textContent = 'Tidak ada kamera ditemukan.';
             }
         } catch (err) {
-            console.error('Error getting cameras:', err);
-            instructionText.textContent = 'Tidak dapat mengakses kamera. Gunakan input manual.';
+            console.error('Error init cameras:', err);
+            instructionText.textContent = 'Akses kamera gagal: ' + err.message;
         }
     }
 
-    // Start scanning
+    // Start
     async function startScanning() {
         const cameraId = cameraSelect.value;
-        if (!cameraId) {
-            alert('Pilih kamera terlebih dahulu!');
-            return;
+        if (!cameraId) return alert('Pilih kamera!');
+
+        if (typeof Html5Qrcode === 'undefined') {
+            return alert('Scanner library belum siap. Silakan refresh halaman.');
         }
 
         try {
+            if (html5QrCode) {
+                await html5QrCode.stop().catch(() => {});
+            }
+
             html5QrCode = new Html5Qrcode("qr-reader");
-            
             await html5QrCode.start(
                 cameraId,
                 {
-                    fps: 10,
-                    qrbox: { width: 250, height: 250 }
+                    fps: 15,
+                    qrbox: (viewfinderWidth, viewfinderHeight) => {
+                        let minEdge = Math.min(viewfinderWidth, viewfinderHeight);
+                        let qrboxSize = Math.floor(minEdge * 0.7);
+                        return { width: qrboxSize, height: qrboxSize };
+                    },
+                    aspectRatio: 1.0 // Force square for consistency
                 },
                 onScanSuccess,
                 onScanFailure
             );
 
             isScanning = true;
-            currentCamera = cameraId;
-            
-            // Update UI
             startBtn.classList.add('hidden');
             stopBtn.classList.remove('hidden');
             cameraSelect.disabled = true;
-            instructionText.textContent = 'Arahkan QR code ke tengah area scan';
-            
-            // Update status indicator
-            statusIndicator.innerHTML = `
-                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
-                <span class="relative inline-flex rounded-full h-3 w-3 bg-green-500"></span>
-            `;
             statusText.textContent = 'Memindai...';
-            statusText.classList.add('text-green-600');
-            
+            statusPulse.className = 'w-2 h-2 rounded-full bg-green-500 animate-pulse';
+            instructionText.textContent = 'Pastikan QR berada dalam bingkai';
         } catch (err) {
-            console.error('Error starting scanner:', err);
-            alert('Gagal memulai kamera: ' + err.message);
+            console.error('Start failed:', err);
+            alert('Gagal Memulai Kamera: ' + err.message);
         }
     }
 
-    // Stop scanning
+    // Stop
     async function stopScanning() {
         if (html5QrCode && isScanning) {
             try {
                 await html5QrCode.stop();
-                isScanning = false;
-                
-                // Update UI
-                startBtn.classList.remove('hidden');
-                stopBtn.classList.add('hidden');
-                cameraSelect.disabled = false;
-                instructionText.textContent = 'Pilih kamera dan klik "Mulai Scan"';
-                
-                // Reset status
-                statusIndicator.innerHTML = `
-                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
-                    <span class="relative inline-flex rounded-full h-3 w-3 bg-red-500"></span>
-                `;
-                statusText.textContent = 'Kamera Scanner Aktif';
-                statusText.classList.remove('text-green-600');
-                
             } catch (err) {
-                console.error('Error stopping scanner:', err);
+                console.warn('Stop failed (probably already stopped):', err);
             }
+            isScanning = false;
+            startBtn.classList.remove('hidden');
+            stopBtn.classList.add('hidden');
+            cameraSelect.disabled = false;
+            statusText.textContent = 'Kamera Siap';
+            statusPulse.className = 'w-2 h-2 rounded-full bg-red-500 animate-pulse';
         }
     }
 
-    // On scan success
-    async function onScanSuccess(decodedText, decodedResult) {
-        console.log('QR Code scanned:', decodedText);
-        
-        // Stop scanning
-        await stopScanning();
-        
-        // Submit to backend
+    function onScanSuccess(decodedText) {
+        stopScanning();
         submitQRData(decodedText);
     }
 
-    // On scan failure (just log, don't alert)
-    function onScanFailure(error) {
-        // console.warn(`QR scan error: ${error}`);
-    }
+    function onScanFailure(err) {}
 
-    // Submit QR data to backend
     async function submitQRData(qrData) {
+        const form = document.getElementById('scan-form');
+        const input = document.getElementById('qr-data-input');
+        input.value = qrData;
+        
         try {
-            const form = document.getElementById('scan-form');
-            const input = document.getElementById('qr-data-input');
-            input.value = qrData;
-            
             const formData = new FormData(form);
-            
             const response = await fetch(form.action, {
                 method: 'POST',
                 body: formData,
-                headers: {
-                    'X-Requested-With': 'XMLHttpRequest'
-                }
+                headers: { 'X-Requested-With': 'XMLHttpRequest' }
             });
-            
+
             if (response.redirected) {
-                // If redirected, show success and then navigate
                 showSuccess(qrData);
-                setTimeout(() => {
-                    window.location.href = response.url;
-                }, 1500);
+                setTimeout(() => window.location.href = response.url, 1200);
             } else {
                 const result = await response.json();
                 if (result.success) {
                     showSuccess(result.order_number);
                 } else {
-                    showError(result.message || 'QR code tidak valid');
+                    showError(result.message);
                 }
             }
         } catch (err) {
-            console.error('Error submitting QR:', err);
-            showError('Terjadi kesalahan saat memproses QR code');
+            showError('Server Error');
         }
     }
 
-    // Show success state
-    function showSuccess(orderNumber) {
-        scannerArea.classList.add('hidden');
+    function showSuccess(id) {
+        statusOverlay.classList.remove('hidden');
+        statusOverlay.classList.add('flex');
         successState.classList.remove('hidden');
-        document.getElementById('order-number').textContent = orderNumber || '-';
-        
-        // Update status
-        statusIndicator.innerHTML = `
-            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
-            <span class="relative inline-flex rounded-full h-3 w-3 bg-green-500"></span>
-        `;
-        statusText.textContent = 'Verifikasi Sukses';
+        hudOverlay.classList.add('hidden');
+        document.getElementById('order-number-display').textContent = 'ID: ' + id;
     }
 
-    // Show error state
-    function showError(message) {
-        scannerArea.classList.add('hidden');
+    function showError(msg) {
+        statusOverlay.classList.remove('hidden');
+        statusOverlay.classList.add('flex');
         errorState.classList.remove('hidden');
-        document.getElementById('error-message').textContent = message;
-        
-        // Update status
-        statusIndicator.innerHTML = `
-            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
-            <span class="relative inline-flex rounded-full h-3 w-3 bg-red-500"></span>
-        `;
-        statusText.textContent = 'QR Tidak Valid';
+        hudOverlay.classList.add('hidden');
+        document.getElementById('error-message-display').textContent = msg;
     }
 
-    // Reset scanner
     function resetScanner() {
-        scannerArea.classList.remove('hidden');
+        statusOverlay.classList.add('hidden');
+        statusOverlay.classList.remove('flex');
         successState.classList.add('hidden');
         errorState.classList.add('hidden');
+        hudOverlay.classList.remove('hidden');
         document.getElementById('manual-input').value = '';
-        
-        // Reset status
-        statusIndicator.innerHTML = `
-            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
-            <span class="relative inline-flex rounded-full h-3 w-3 bg-red-500"></span>
-        `;
-        statusText.textContent = 'Kamera Scanner Aktif';
-        statusText.classList.remove('text-green-600');
-        instructionText.textContent = 'Pilih kamera dan klik "Mulai Scan"';
     }
 
-    // Event listeners
     startBtn.addEventListener('click', startScanning);
     stopBtn.addEventListener('click', stopScanning);
-    
-    // Manual form submission
-    document.getElementById('manual-form').addEventListener('submit', function(e) {
+    document.getElementById('manual-form').addEventListener('submit', (e) => {
         e.preventDefault();
-        const qrData = document.getElementById('manual-input').value.trim();
-        if (qrData) {
-            submitQRData(qrData);
-        }
+        const val = document.getElementById('manual-input').value.trim();
+        if (val) submitQRData(val);
     });
 
-    // Initialize on load
     document.addEventListener('DOMContentLoaded', initCameras);
 </script>
 @endsection

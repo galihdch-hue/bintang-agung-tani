@@ -132,7 +132,7 @@
                         </td>
                         <td class="px-6 py-5">
                             @if($product->category)
-                                <span class="inline-flex px-2 py-1 text-xs font-semibold rounded bg-emerald-50 text-emerald-700 border border-emerald-200">
+                                <span class="inline-flex px-2 py-1 text-xs font-semibold rounded bg-primary-50 text-primary-700 border border-primary-200">
                                     {{ $product->category->name }}
                                 </span>
                             @else
@@ -193,65 +193,134 @@
         </div>
         
         <!-- Pagination -->
-        <div class="p-5 border-t border-primary-100">
-            {{ $products->links() }}
+        <div class="p-5 border-t border-primary-100 flex w-full">
+            {{ $products->links('vendor.pagination.custom') }}
         </div>
     </div>
     
     <!-- Restock Quick Action Modal -->
-    <div x-show="showUpdateModal" x-cloak style="display: none;" class="fixed inset-0 z-50 flex items-center justify-center bg-gray-900/60"
-         x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100"
-         x-transition:leave="transition ease-in duration-200" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0">
-        <div @click.away="showUpdateModal = false" class="bg-white rounded-2xl shadow-xl w-full max-w-[440px] mx-4 overflow-hidden"
-             x-transition:enter="transition ease-out duration-300 delay-75" x-transition:enter-start="opacity-0 translate-y-8 scale-95" x-transition:enter-end="opacity-100 translate-y-0 scale-100"
-             x-transition:leave="transition ease-in duration-200" x-transition:leave-start="opacity-100 translate-y-0 scale-100" x-transition:leave-end="opacity-0 translate-y-8 scale-95">
+    <div x-show="showUpdateModal" x-cloak style="display: none;" class="fixed inset-0 z-[100] flex items-center justify-center p-4"
+         x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100">
+        <!-- Backdrop -->
+        <div class="absolute inset-0 bg-slate-900/40 backdrop-blur-sm" @click="showUpdateModal = false"></div>
+        
+        <!-- Modal Content -->
+        <div class="bg-white rounded-[24px] shadow-2xl w-full max-w-[460px] relative z-10 overflow-hidden border border-slate-200"
+             x-transition:enter="transition ease-out duration-300 delay-75" 
+             x-transition:enter-start="opacity-0 translate-y-8 scale-95" 
+             x-transition:enter-end="opacity-100 translate-y-0 scale-100">
             
-            <div class="px-6 py-5 border-b border-gray-100 flex items-center justify-between bg-white relative overflow-hidden">
-                <div class="absolute inset-0 bg-gradient-to-r from-primary-50/50 to-transparent pointer-events-none"></div>
-                <div class="relative z-10">
-                    <h3 class="text-xl font-bold text-gray-900">Restock Barang Cepat</h3>
-                    <p class="text-sm font-medium text-gray-600 mt-1 truncate max-w-[300px]" x-text="updateTarget"></p>
+            <!-- Header: Vibrant & Branded -->
+            <div class="px-8 py-6 bg-gradient-to-br from-primary-600 to-teal-700 relative overflow-hidden">
+                <div class="absolute top-0 right-0 p-4 opacity-10 transform translate-x-4 -translate-y-4">
+                    <i class="ph ph-package ph-fill text-[120px]"></i>
                 </div>
-                <button @click="showUpdateModal = false" class="text-gray-400 hover:text-gray-900 relative z-10 bg-gray-100 rounded-lg p-1.5 transition-colors border border-transparent hover:border-gray-200 hover:shadow-sm">
-                    <i class="ph ph-x ph-bold w-5 h-5"></i>
-                </button>
+                <div class="relative z-10 flex items-center justify-between">
+                    <div>
+                        <h3 class="text-xl font-bold text-white tracking-tight">Restock Barang Cepat</h3>
+                        <div class="flex items-center gap-2 mt-1.5">
+                            <span class="inline-flex px-2 py-0.5 rounded-full bg-white/20 text-white text-[10px] font-bold uppercase tracking-wider backdrop-blur-md border border-white/10">Quick Action</span>
+                            <p class="text-primary-50 text-sm font-medium truncate max-w-[220px]" x-text="updateTarget"></p>
+                        </div>
+                    </div>
+                    <button @click="showUpdateModal = false" class="w-10 h-10 flex items-center justify-center bg-white/10 hover:bg-white/20 text-white rounded-xl transition-all border border-white/20 backdrop-blur-sm shadow-inner group">
+                        <i class="ph ph-x ph-bold w-5 h-5 transition-transform group-hover:rotate-90"></i>
+                    </button>
+                </div>
             </div>
             
-            <form :action="'{{ url('/admin/stok') }}/' + productId" method="POST" class="p-6 space-y-5" id="stockUpdateForm" x-ref="stockForm">
+            <form :action="'{{ url('/admin/stok') }}/' + productId" method="POST" class="p-8 space-y-6" id="stockUpdateForm">
                 @csrf
                 @method('PATCH')
                 <input type="hidden" name="product_id" x-model="productId">
                 
-                <div class="flex items-center justify-between p-4 bg-gray-50 rounded-xl border border-gray-200">
-                    <div>
-                        <p class="text-xs font-bold text-gray-500 uppercase tracking-widest mb-1">Stok Saat Ini (Sisa)</p>
-                        <p class="text-3xl font-black text-gray-900 leading-none" x-text="currentStock"></p>
+                <!-- Info Card: Current Stock -->
+                <div class="group relative">
+                    <div class="absolute -inset-0.5 bg-gradient-to-r from-primary-500 to-teal-500 rounded-2xl blur opacity-10 group-hover:opacity-20 transition duration-500"></div>
+                    <div class="relative flex items-center justify-between p-5 bg-white rounded-2xl border border-slate-100 shadow-sm transition-all duration-300">
+                        <div>
+                            <p class="text-[11px] font-bold text-slate-400 uppercase tracking-widest mb-1.5">Stok Saat Ini (Sisa)</p>
+                            <div class="flex items-baseline gap-1.5">
+                                <span class="text-4xl font-black text-slate-900 leading-none tracking-tight" x-text="currentStock"></span>
+                                <span class="text-sm font-bold text-slate-400 uppercase tracking-wide">Unit</span>
+                            </div>
+                        </div>
+                        <div class="w-14 h-14 rounded-2xl bg-primary-50 text-primary-600 flex items-center justify-center shadow-inner border border-primary-100/50">
+                            <i class="ph ph-stack ph-fill text-2xl"></i>
+                        </div>
                     </div>
                 </div>
 
-                <div>
-                    <label class="form-label block mb-1.5">Jumlah Penambahan Stok <span class="text-red-500">*</span></label>
-                    <div class="relative flex items-center">
-                        <span class="absolute left-0 pl-4 font-bold text-xl text-primary-500 pointer-events-none">+</span>
-                        <input type="number" name="quantity" min="1" value="10" required class="form-input w-full pl-9 text-lg font-bold text-gray-900 bg-white border-primary-200 focus:ring-primary-500/20 focus:border-primary-500 shadow-sm" style="height: 3rem;">
+                <!-- Input: Quantity -->
+                <div class="space-y-2">
+                    <label class="text-sm font-bold text-slate-700 flex items-center gap-2">
+                        Jumlah Penambahan Stok
+                        <span class="text-red-500">*</span>
+                    </label>
+                    <div class="relative group">
+                        <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none z-10">
+                            <div class="w-8 h-8 rounded-lg bg-primary-50 text-primary-600 flex items-center justify-center font-bold text-lg border border-primary-100 shadow-sm">
+                                +
+                            </div>
+                        </div>
+                        <input type="number" name="quantity" min="1" value="10" required 
+                               class="block w-full pl-16 pr-4 py-4 bg-slate-50 border border-slate-200 rounded-2xl text-xl font-black text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-4 focus:ring-primary-500/10 focus:border-primary-500 focus:bg-white transition-all shadow-sm"
+                               placeholder="0">
+                        <div class="absolute inset-y-0 right-0 pr-4 flex items-center pointer-events-none">
+                            <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Unit Baru</span>
+                        </div>
                     </div>
-                    <p class="text-xs text-gray-500 mt-2 font-medium">Stok baru akan ditambahkan ke sisa stok saat ini.</p>
+                    <div class="flex items-start gap-2 p-2 rounded-lg bg-slate-50 border border-slate-100">
+                        <i class="ph ph-info ph-fill text-primary-500 mt-0.5"></i>
+                        <p class="text-[11px] leading-relaxed text-slate-500 font-medium">Stok baru akan ditambahkan ke sisa stok saat ini secara otomatis.</p>
+                    </div>
                 </div>
 
-                <div>
-                    <label class="form-label block mb-1.5">Keterangan / Referensi Invois <span class="text-red-500">*</span></label>
-                    <input type="text" name="reason" placeholder="Misal: Restock supplier" class="form-input w-full" required>
+                <!-- Input: Reason -->
+                <div class="space-y-2">
+                    <label class="text-sm font-bold text-slate-700 flex items-center gap-2">
+                        Keterangan / Referensi Invois
+                        <span class="text-red-500">*</span>
+                    </label>
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400">
+                            <i class="ph ph-note-pencil ph-bold w-5 h-5"></i>
+                        </div>
+                        <input type="text" name="reason" placeholder="Misal: Restock dari supplier CV. Makmur" 
+                               class="block w-full pl-11 pr-4 py-3.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-medium text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-4 focus:ring-primary-500/10 focus:border-primary-500 focus:bg-white transition-all"
+                               required>
+                    </div>
                 </div>
             </form>
             
-            <div class="px-6 py-4 border-t border-gray-100 bg-gray-50 flex items-center justify-between">
-                <button @click="showUpdateModal = false" type="button" class="text-sm font-semibold text-gray-500 hover:text-gray-700 transition-colors">Batalkan</button>
-                <button type="submit" form="stockUpdateForm" class="btn-primary shadow-md text-sm px-6 h-10">
-                    <i class="ph ph-check ph-bold w-4 h-4"></i> Konfirmasi Restock
+            <!-- Footer: Actions -->
+            <div class="px-8 py-6 bg-slate-50 border-t border-slate-100 flex items-center justify-between">
+                <button @click="showUpdateModal = false" type="button" 
+                        class="px-5 py-2.5 text-sm font-bold text-slate-500 hover:text-slate-800 transition-colors flex items-center gap-2">
+                    Batal
+                </button>
+                <button type="submit" form="stockUpdateForm" 
+                        class="px-8 py-3 bg-primary-600 hover:bg-primary-700 text-white rounded-xl font-bold text-sm shadow-lg shadow-primary-600/20 hover:shadow-primary-600/40 hover:-translate-y-0.5 transition-all flex items-center gap-2 group">
+                    <i class="ph ph-check-circle ph-bold w-5 h-5 group-hover:scale-110 transition-transform"></i>
+                    Konfirmasi Restock
                 </button>
             </div>
         </div>
     </div>
 
 </div>
+
+<style>
+    /* Hide spin buttons in Chrome, Safari, Edge, Opera */
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+
+    /* Hide spin buttons in Firefox */
+    input[type=number] {
+        -moz-appearance: textfield;
+    }
+</style>
 @endsection

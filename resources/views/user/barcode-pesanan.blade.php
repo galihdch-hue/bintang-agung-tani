@@ -1,98 +1,179 @@
 @extends('layouts.app')
 
-@section('title', 'Checkout Berhasil')
+@section('title', 'E-Ticket - ' . ($order->order_number ?? 'Pesanan'))
 
 @section('content')
-<div class="max-w-2xl mx-auto py-8 px-4 sm:px-0 relative z-10 w-full">
-    <div class="card p-8 md:p-12 text-center relative overflow-hidden bg-white shadow-lg border border-gray-100">
-        
-        <!-- Decoration Elements -->
-        <div class="absolute top-0 right-0 w-64 h-64 bg-green-50 rounded-full -z-10 opacity-70 translate-x-1/3 -translate-y-1/3"></div>
-        <div class="absolute bottom-0 left-0 w-48 h-48 bg-yellow-50 rounded-full -z-10 opacity-60 -translate-x-1/4 translate-y-1/4"></div>
-        
-        <div class="w-24 h-24 bg-gradient-to-br from-green-400 to-emerald-600 text-white rounded-[2rem] flex items-center justify-center mx-auto mb-8 shadow-lg rotate-3">
-            <i class="ph ph-check-circle ph-fill w-14 h-14 -rotate-3"></i>
-        </div>
-        
-        <h1 class="text-[32px] md:text-4xl font-black text-gray-900 mb-3 tracking-tight">Checkout Berhasil!</h1>
-        <p class="text-gray-500 mb-10 text-lg">Pesanan Anda telah kami terima dan menunggu pembayaran / pengambilan.</p>
+<!-- Import Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
-        <div class="bg-gray-50/80 border border-gray-100 rounded-[2rem] p-8 md:p-10 mx-auto shadow-inner relative max-w-sm">
+<div class="min-h-[80vh] flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 bg-gray-50/50">
+    <div class="max-w-md w-full perspective-1000">
+        <!-- Main Ticket Container -->
+        <div class="relative bg-white rounded-[3rem] shadow-[0_20px_70px_-15px_rgba(0,0,0,0.1)] overflow-hidden border border-gray-100/50 flex flex-col transform-style-3d hover:shadow-[0_30px_100px_-20px_rgba(0,0,0,0.15)] transition-all duration-700">
             
-            <p class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-2">KODE PENGAMBILAN</p>
-            <div class="flex items-center justify-center gap-2 mb-8">
-                <h2 class="text-2xl font-black text-gray-900 tracking-wider">{{ $order->order_number ?? '-' }}</h2>
-                <button class="text-gray-400 hover:text-emerald-600 transition-colors focus:outline-none" title="Salin Kode" onclick="navigator.clipboard.writeText('{{ $order->order_number ?? '-' }}'); alert('Kode disalin!')">
-                    <i class="ph ph-copy ph-bold w-5 h-5"></i>
-                </button>
-            </div>
-
-            <!-- Enhanced QR Code Box -->
-            <div class="mx-auto w-56 h-56 bg-white p-4 rounded-3xl shadow-sm border border-gray-200 flex items-center justify-center mb-8 relative group cursor-pointer hover:border-green-300 transition-colors">
-                <!-- Frame Decoration -->
-                <div class="absolute top-4 left-4 w-6 h-6 border-t-4 border-l-4 border-green-500 rounded-tl-lg"></div>
-                <div class="absolute top-4 right-4 w-6 h-6 border-t-4 border-r-4 border-green-500 rounded-tr-lg"></div>
-                <div class="absolute bottom-4 left-4 w-6 h-6 border-b-4 border-l-4 border-green-500 rounded-bl-lg"></div>
-                <div class="absolute bottom-4 right-4 w-6 h-6 border-b-4 border-r-4 border-green-500 rounded-br-lg"></div>
+            <!-- Header Section (Premium Gradient) -->
+            <div class="bg-gradient-to-br from-primary-600 via-primary-700 to-primary-900 p-10 text-center text-white relative overflow-hidden">
+                <!-- Glossy Overlay -->
+                <div class="absolute top-0 left-0 w-full h-full bg-white/10 skew-y-12 translate-y-[-50%] pointer-events-none"></div>
                 
-                @if($order && $order->qr_code_path && $order->getQrCodeUrl())
-                    <!-- Actual QR Code Image -->
-                    <img 
-                        src="{{ $order->getQrCodeUrl() }}" 
-                        alt="QR Code untuk Order {{ $order->order_number }}" 
-                        class="w-[85%] h-[85%] object-contain group-hover:scale-105 transition-transform duration-500"
-                        id="qr-code-image"
-                        onerror="this.style.display='none'; document.getElementById('qr-fallback').style.display='flex';"
-                    >
-                    <!-- Fallback if image fails to load -->
-                    <div id="qr-fallback" style="display: none;" class="w-[85%] h-[85%] items-center justify-center">
-                        <svg width="100%" height="100%" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-                            <rect width="100" height="100" fill="white"/>
-                            <path d="M10,10 h20 v20 h-20 z M15,15 h10 v10 h-10 z M10,70 h20 v20 h-20 z M15,75 h10 v10 h-10 z M70,10 h20 v20 h-20 z M75,15 h10 v10 h-10 z" fill="#111827"/>
-                            <path d="M40,10 h5 v5 h-5 z M50,15 h5 v5 h-5 z M45,25 h15 v5 h-15 z M10,40 h15 v5 h-15 z M30,40 h10 v10 h-10 z M50,45 h5 v15 h-5 z M65,40 h25 v5 h-25 z M75,55 h15 v5 h-15 z M80,70 h10 v5 h-10 z M40,65 h15 v5 h-15 z M45,80 h5 v10 h-5 z M60,70 h10 v20 h-10 z M25,60 h5 v5 h-5 z M85,30 h5 v5 h-5 z M45,55 h5 v5 h-5 z M30,20 h5 v5 h-5 z" fill="#111827"/>
-                            <path d="M70,70 h15 v15 h-15 z M75,75 h5 v5 h-5 z" fill="#111827"/>
-                        </svg>
-                    </div>
-                @else
-                    <!-- Mock QR Code - No order or QR not available -->
-                    <svg width="85%" height="85%" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" class="group-hover:scale-105 transition-transform duration-500">
-                        <rect width="100" height="100" fill="white"/>
-                        <path d="M10,10 h20 v20 h-20 z M15,15 h10 v10 h-10 z M10,70 h20 v20 h-20 z M15,75 h10 v10 h-10 z M70,10 h20 v20 h-20 z M75,15 h10 v10 h-10 z" fill="#111827"/>
-                        <path d="M40,10 h5 v5 h-5 z M50,15 h5 v5 h-5 z M45,25 h15 v5 h-15 z M10,40 h15 v5 h-15 z M30,40 h10 v10 h-10 z M50,45 h5 v15 h-5 z M65,40 h25 v5 h-25 z M75,55 h15 v5 h-15 z M80,70 h10 v5 h-10 z M40,65 h15 v5 h-15 z M45,80 h5 v10 h-5 z M60,70 h10 v20 h-10 z M25,60 h5 v5 h-5 z M85,30 h5 v5 h-5 z M45,55 h5 v5 h-5 z M30,20 h5 v5 h-5 z" fill="#111827"/>
-                        <path d="M70,70 h15 v15 h-15 z M75,75 h5 v5 h-5 z" fill="#111827"/>
-                    </svg>
-                @endif
+                <!-- Brand Accent -->
+                <div class="inline-flex items-center justify-center w-20 h-20 bg-white/10 backdrop-blur-xl rounded-3xl mb-6 ring-1 ring-white/30 shadow-2xl animate-float">
+                    <i class="ph ph-qr-code text-white text-4xl"></i>
+                </div>
+                
+                <h1 class="text-3xl font-black mb-2 tracking-tight font-outfit">E-TICKET</h1>
+                <p class="text-white/70 text-sm font-medium tracking-wide font-outfit uppercase">Tunjukkan kode untuk pengambilan</p>
+                
+                <!-- Floating Orbs -->
+                <div class="absolute -top-10 -left-10 w-32 h-32 bg-white/5 rounded-full blur-3xl animate-pulse"></div>
+                <div class="absolute -bottom-10 -right-10 w-32 h-32 bg-white/5 rounded-full blur-3xl animate-pulse" style="animation-delay: 1s"></div>
             </div>
-            
-            @if($order && $order->qr_code_path)
-                <a href="{{ route('user.payments.download-qr', $order) }}" class="btn-secondary mb-4 inline-flex items-center text-sm">
-                    <i class="ph ph-download-simple w-4 h-4 mr-1.5"></i> Download QR Code
-                </a>
-            @endif
-            
-            <p class="text-sm text-gray-600 leading-relaxed font-medium px-4">
-                Tunjukkan Barcode QR ini kepada kasir toko saat melakukan pengambilan atau pembayaran.
-            </p>
-            
-            <div class="mt-6 pt-5 border-t border-gray-200/60 border-dashed">
-                <div class="flex items-center justify-center gap-2 text-xs text-amber-700 font-bold bg-amber-100/50 py-2.5 px-4 rounded-xl">
-                    <i class="ph ph-warning-circle ph-fill w-4 h-4 text-amber-500"></i> Screenshot atau simpan halaman ini!
+
+            <!-- Main Body (White Section) -->
+            <div class="px-10 py-12 text-center bg-white relative">
+                <!-- ID Section -->
+                <div class="mb-10 group relative">
+                    <span class="block text-[11px] font-bold text-gray-400 uppercase tracking-[0.3em] mb-3 font-outfit">Transaction ID</span>
+                    <div class="inline-flex items-center gap-4 bg-gray-50/80 backdrop-blur-sm border border-gray-100 px-8 py-4 rounded-[2rem] hover:border-primary-200 hover:bg-primary-50/50 transition-all duration-500 cursor-pointer group/id"
+                         onclick="navigator.clipboard.writeText('{{ $order->order_number }}'); alert('ID Pesanan disalin!')">
+                        <span class="text-2xl font-black text-gray-900 tracking-wider font-outfit">{{ $order->order_number }}</span>
+                        <div class="w-10 h-10 rounded-2xl bg-white border border-gray-200 flex items-center justify-center shadow-sm group-hover/id:scale-110 group-hover/id:shadow-md transition-all">
+                            <i class="ph ph-copy ph-bold text-gray-400 group-hover/id:text-primary-600"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- QR Code Visualization -->
+                <div class="relative mx-auto w-64 h-64 mb-10 group">
+                    <!-- Glass Background -->
+                    <div class="absolute inset-0 bg-gray-50 rounded-[3rem] -rotate-3 scale-[1.02] opacity-50 group-hover:rotate-0 group-hover:scale-105 transition-all duration-700"></div>
+                    
+                    <div class="relative w-full h-full bg-white p-6 rounded-[3rem] shadow-[0_15px_40px_-10px_rgba(0,0,0,0.1)] border border-gray-100 flex items-center justify-center z-10 group-hover:shadow-[0_20px_50px_-10px_rgba(0,0,0,0.15)] transition-all duration-500">
+                        <!-- Scanning Animation -->
+                        <div class="absolute inset-6 border-t-2 border-primary-500 rounded-full opacity-0 group-hover:opacity-100 animate-scan-premium z-20 pointer-events-none"></div>
+                        
+                        <!-- Corner Markers -->
+                        <div class="absolute top-6 left-6 w-10 h-10 border-t-4 border-l-4 border-primary-600/30 rounded-tl-3xl z-20 group-hover:border-primary-600 transition-all duration-500"></div>
+                        <div class="absolute top-6 right-6 w-10 h-10 border-t-4 border-r-4 border-primary-600/30 rounded-tr-3xl z-20 group-hover:border-primary-600 transition-all duration-500"></div>
+                        <div class="absolute bottom-6 left-6 w-10 h-10 border-b-4 border-l-4 border-primary-600/30 rounded-bl-3xl z-20 group-hover:border-primary-600 transition-all duration-500"></div>
+                        <div class="absolute bottom-6 right-6 w-10 h-10 border-b-4 border-r-4 border-primary-600/30 rounded-br-3xl z-20 group-hover:border-primary-600 transition-all duration-500"></div>
+
+                        @if($order && $order->qr_code_path)
+                            <img src="{{ $order->getQrCodeUrl() }}" alt="QR" class="w-full h-full object-contain relative z-10 filter group-hover:brightness-105 transition-all">
+                        @else
+                            <div class="flex flex-col items-center opacity-30">
+                                <i class="ph ph-qr-code text-6xl mb-2"></i>
+                                <span class="text-[10px] font-black uppercase tracking-tighter">No QR Available</span>
+                            </div>
+                        @endif
+                    </div>
+                </div>
+
+                <!-- Info Cards -->
+                <div class="grid grid-cols-2 gap-4 mb-8">
+                    <div class="bg-gray-50/50 border border-gray-100 p-5 rounded-[2rem] text-left hover:bg-white hover:shadow-xl hover:shadow-gray-100 transition-all group">
+                        <div class="w-8 h-8 rounded-xl bg-primary-100 text-primary-600 flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
+                            <i class="ph ph-user-circle ph-bold text-lg"></i>
+                        </div>
+                        <span class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1 font-outfit">Pelanggan</span>
+                        <span class="text-xs font-black text-gray-900 truncate block">{{ $order->user->name ?? 'User' }}</span>
+                    </div>
+                    <div class="bg-gray-50/50 border border-gray-100 p-5 rounded-[2rem] text-left hover:bg-white hover:shadow-xl hover:shadow-gray-100 transition-all group">
+                        <div class="w-8 h-8 rounded-xl bg-orange-100 text-orange-600 flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
+                            <i class="ph ph-shopping-cart ph-bold text-lg"></i>
+                        </div>
+                        <span class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1 font-outfit">Total Item</span>
+                        <span class="text-xs font-black text-gray-900 block">{{ count($order->items ?? []) }} Produk</span>
+                    </div>
+                </div>
+
+                <!-- Status Banner -->
+                <div class="flex items-center justify-between bg-primary-50/50 border border-primary-100/30 p-5 rounded-[2rem]">
+                    <div class="flex items-center gap-3">
+                        <div class="relative">
+                            <div class="w-3 h-3 bg-primary-500 rounded-full animate-ping"></div>
+                            <div class="absolute inset-0 w-3 h-3 bg-primary-600 rounded-full"></div>
+                        </div>
+                        <div>
+                            <span class="block text-[9px] font-bold text-primary-600/60 uppercase tracking-widest font-outfit">Status Pesanan</span>
+                            <span class="text-sm font-black text-primary-900 uppercase font-outfit">{{ $order->getStatusLabel() }}</span>
+                        </div>
+                    </div>
+                    <div class="text-right">
+                        <span class="block text-[9px] font-bold text-primary-600/60 uppercase tracking-widest font-outfit">Tanggal</span>
+                        <span class="text-sm font-black text-primary-900 font-outfit">{{ $order->created_at->format('d/m/y') }}</span>
+                    </div>
                 </div>
             </div>
+
+            <!-- Perforation Bridge -->
+            <div class="relative h-10 bg-white flex items-center justify-center">
+                <div class="absolute -left-5 w-10 h-10 bg-gray-50/50 rounded-full border border-gray-100/50 shadow-inner z-20"></div>
+                <div class="w-full border-t-2 border-dashed border-gray-200 px-6"></div>
+                <div class="absolute -right-5 w-10 h-10 bg-gray-50/50 rounded-full border border-gray-100/50 shadow-inner z-20"></div>
+            </div>
+
+            <!-- Action Section -->
+            <div class="p-10 bg-gray-50/50 flex flex-col gap-4">
+                <div class="flex gap-4">
+                    @if($order && $order->qr_code_path)
+                        <a href="{{ route('user.payments.download-qr', $order) }}" 
+                           class="flex-1 bg-white border-2 border-gray-100 hover:border-primary-200 py-4 rounded-[1.5rem] flex items-center justify-center gap-2 group transition-all hover:shadow-lg hover:shadow-gray-200">
+                            <i class="ph ph-download-simple ph-bold text-lg text-gray-400 group-hover:text-primary-600 transition-colors"></i>
+                            <span class="text-xs font-black text-gray-600 group-hover:text-primary-900 transition-colors">SAVE</span>
+                        </a>
+                    @endif
+                    <a href="{{ route('user.orders.show', $order) }}" 
+                       class="flex-[2] bg-primary-600 hover:bg-primary-700 py-4 rounded-[1.5rem] flex items-center justify-center gap-3 shadow-xl shadow-primary-200 hover:shadow-primary-300 transform hover:-translate-y-1 transition-all group">
+                        <i class="ph ph-clipboard-text ph-bold text-lg text-white/90"></i>
+                        <span class="text-xs font-black text-white tracking-widest uppercase font-outfit">Order Details</span>
+                    </a>
+                </div>
+                
+                <a href="{{ route('user.dashboard') }}" class="text-center group py-2">
+                    <span class="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] group-hover:text-primary-600 transition-colors">Back to Dashboard</span>
+                </a>
+            </div>
         </div>
 
-        <div class="mt-12 flex flex-col sm:flex-row items-center justify-center gap-4">
-            <a href="{{ route('user.orders.index') }}" class="btn-primary w-full sm:w-auto h-12 shadow-md hover:bg-emerald-700">
-                <i class="ph ph-file-text ph-bold mr-2 w-5 h-5"></i> Lihat Riwayat Pesanan
-            </a>
-            @if($order)
-            <a href="{{ route('user.orders.show', $order) }}" class="btn-secondary w-full sm:w-auto h-12 bg-white hover:bg-gray-50 text-gray-700 border border-gray-200">
-                <i class="ph ph-clipboard-text ph-bold mr-2 w-5 h-5"></i> Lihat Rincian Pesanan
-            </a>
-            @endif
-            <a href="{{ route('user.dashboard') }}" class="btn-secondary w-full sm:w-auto h-12 bg-white hover:bg-gray-50 text-gray-700">
-                Kembali ke Beranda
-            </a>
+        <!-- Security Notice -->
+        <div class="mt-8 flex items-center justify-center gap-2 text-gray-400 px-6">
+            <i class="ph ph-shield-check text-lg opacity-50"></i>
+            <p class="text-[10px] font-medium leading-tight">Keamanan data Anda terjaga. Barcode ini hanya valid untuk satu kali proses pengambilan di toko resmi kami.</p>
+        </div>
     </div>
 </div>
+
+<style>
+    body {
+        font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+    .font-outfit {
+        font-family: 'Outfit', sans-serif;
+    }
+    .perspective-1000 {
+        perspective: 1000px;
+    }
+    .transform-style-3d {
+        transform-style: preserve-3d;
+    }
+    @keyframes float {
+        0%, 100% { transform: translateY(0) rotate(0); }
+        50% { transform: translateY(-10px) rotate(2deg); }
+    }
+    .animate-float {
+        animation: float 5s ease-in-out infinite;
+    }
+    @keyframes scan-premium {
+        0% { transform: translateY(0); opacity: 0; }
+        20% { opacity: 1; }
+        80% { opacity: 1; }
+        100% { transform: translateY(180px); opacity: 0; }
+    }
+    .animate-scan-premium {
+        animation: scan-premium 4s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+    }
+</style>
 @endsection

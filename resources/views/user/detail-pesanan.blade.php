@@ -30,18 +30,65 @@ use App\Models\Setting;
             </div>
             <p class="text-sm text-gray-500 mt-1 flex items-center gap-1.5">No. Invoice: <span class="font-bold text-gray-800 tracking-wider">{{ $order->order_number }}</span></p>
         </div>
-        <div class="flex items-center gap-3">
-             <a href="{{ route('user.orders.index') }}" class="btn-secondary text-sm h-10 shadow-sm border-gray-200">
-                <i class="ph ph-arrow-left ph-bold w-4 h-4"></i> Kembali ke Riwayat
+        <div class="flex items-center gap-3" x-data="{ showCancelModal: false }">
+            <a href="{{ route('user.orders.index') }}" class="inline-flex items-center gap-2 px-4 py-2.5 bg-white border border-gray-200 text-gray-700 rounded-xl hover:bg-gray-50 transition-all text-sm font-semibold shadow-sm hover:shadow-md">
+                <i class="ph ph-arrow-left ph-bold w-4 h-4 text-gray-400"></i> Kembali
             </a>
             
             @if($order->canBeCancelled())
-                <form action="{{ route('user.orders.cancel', $order) }}" method="POST" class="inline" onsubmit="return confirm('Yakin ingin membatalkan pesanan ini?');">
-                    @csrf
-                    <button type="submit" class="btn-danger text-sm h-10 shadow-sm">
-                        <i class="ph ph-x-circle ph-bold w-4 h-4"></i> Batalkan Pesanan
-                    </button>
-                </form>
+                <button type="button" @click="showCancelModal = true" class="inline-flex items-center gap-2 px-4 py-2.5 bg-white border border-red-200 text-red-600 rounded-xl hover:bg-red-600 hover:text-white transition-all duration-300 text-sm font-bold shadow-sm hover:shadow-red-200/50 hover:shadow-lg group">
+                    <i class="ph ph-x-circle ph-bold w-4 h-4 group-hover:scale-110 transition-transform"></i> Batalkan Pesanan
+                </button>
+
+                <!-- Modal Konfirmasi Pembatalan -->
+                <template x-teleport="body">
+                    <div x-show="showCancelModal" 
+                         x-transition:enter="transition ease-out duration-300"
+                         x-transition:enter-start="opacity-0"
+                         x-transition:enter-end="opacity-100"
+                         x-transition:leave="transition ease-in duration-200"
+                         x-transition:leave-start="opacity-100"
+                         x-transition:leave-end="opacity-0"
+                         class="fixed inset-0 z-[999] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+                        
+                        <div x-show="showCancelModal"
+                             x-transition:enter="transition ease-out duration-300"
+                             x-transition:enter-start="opacity-0 scale-95 translate-y-4"
+                             x-transition:enter-end="opacity-100 scale-100 translate-y-0"
+                             x-transition:leave="transition ease-in duration-200"
+                             x-transition:leave-start="opacity-100 scale-100 translate-y-0"
+                             x-transition:leave-end="opacity-0 scale-95 translate-y-4"
+                             @click.away="showCancelModal = false"
+                             class="bg-white rounded-3xl shadow-2xl max-w-md w-full overflow-hidden border border-gray-100">
+                            
+                            <div class="p-8 text-center">
+                                <div class="w-20 h-20 bg-red-50 text-red-500 rounded-full flex items-center justify-center mx-auto mb-6 ring-8 ring-red-50/50 animate-pulse">
+                                    <i class="ph ph-warning-circle ph-fill text-4xl"></i>
+                                </div>
+                                
+                                <h3 class="text-2xl font-black text-gray-900 mb-2 tracking-tight">Batalkan Pesanan?</h3>
+                                <p class="text-gray-500 leading-relaxed font-medium">Tindakan ini tidak dapat dibatalkan. Apakah Anda yakin ingin membatalkan pesanan <span class="text-gray-900 font-bold">#{{ $order->order_number }}</span> ini?</p>
+                                
+                                <div class="grid grid-cols-2 gap-4 mt-8">
+                                    <button @click="showCancelModal = false" type="button" class="px-6 py-3 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-2xl font-bold transition-all text-sm">
+                                        Tidak, Kembali
+                                    </button>
+                                    <form action="{{ route('user.orders.cancel', $order) }}" method="POST">
+                                        @csrf
+                                        <button type="submit" class="w-full px-6 py-3 bg-red-600 hover:bg-red-700 text-white rounded-2xl font-bold transition-all shadow-lg shadow-red-200 text-sm">
+                                            Ya, Batalkan
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                            
+                            <div class="bg-gray-50 px-8 py-4 border-t border-gray-100 flex items-center justify-center gap-2">
+                                <i class="ph ph-info ph-bold text-gray-400 w-4 h-4"></i>
+                                <span class="text-[11px] font-bold text-gray-400 uppercase tracking-widest">Bintang Agung Tani Safety Protocol</span>
+                            </div>
+                        </div>
+                    </div>
+                </template>
             @endif
         </div>
     </div>

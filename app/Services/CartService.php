@@ -19,6 +19,7 @@ class CartService
     public function addToCart(User $user, Product $product, int $quantity = 1, ?string $notes = null): CartItem
     {
         return DB::transaction(function () use ($user, $product, $quantity, $notes) {
+            /** @var Product $product */
             if (! $product->hasStock($quantity)) {
                 throw new Exception("Product '{$product->name}' is out of stock. Only {$product->stock} item(s) available.");
             }
@@ -70,7 +71,9 @@ class CartService
     public function updateQuantity(CartItem $cartItem, int $quantity): CartItem
     {
         return DB::transaction(function () use ($cartItem, $quantity) {
+            /** @var Product|null $product */
             $product = $cartItem->product;
+            /** @var Cart $cart */
             $cart = $cartItem->cart;
 
             if ($quantity <= 0) {
@@ -80,8 +83,14 @@ class CartService
                 return $cartItem;
             }
 
+            if (! $product) {
+                $cartItem->delete();
+                $cart->recalculateTotals();
+                throw new Exception("Produk sudah tidak tersedia dan telah dihapus dari keranjang.");
+            }
+
             if (! $product->hasStock($quantity)) {
-                throw new Exception("Product '{$product->name}' is out of stock. Only {$product->stock} item(s) available.");
+                throw new Exception("Stok produk '{$product->name}' tidak mencukupi. Tersedia {$product->stock} item.");
             }
 
             if (! $product->isAvailableForOrder($quantity)) {
@@ -174,51 +183,82 @@ class CartService
 
     public function validateForCheckout(int $userId): array
     {
-        $cart = Cart::with(['items.product'])
-            ->where('user_id', $userId)
-            ->first();
+        return DB::transaction(function () use ($userId) {
+            /** @var Cart|null $cart */
+            $cart = Cart::with(['items.product'])
+                ->where('user_id', $userId)
+                ->first();
 
-        $errors = [];
-        $warnings = [];
+            $errors = [];
+            $warnings = [];
+            $itemsRemoved = false;
 
-        if (! $cart || $cart->isEmpty()) {
-            $errors[] = 'Your cart is empty. Please add items before checkout.';
+            if (! $cart || $cart->isEmpty()) {
+                $errors[] = 'Keranjang belanja Anda kosong. Silakan tambahkan produk terlebih dahulu.';
+
+                return [
+                    'valid' => false,
+                    'errors' => $errors,
+                    'warnings' => $warnings,
+                    'cart' => null,
+                ];
+            }
+
+            foreach ($cart->items as $item) {
+                $product = $item->product;
+
+                // 1. Check if product exists in database
+                if (! $product) {
+                    $item->delete();
+                    $itemsRemoved = true;
+                    $warnings[] = "Produk sudah tidak tersedia dan telah dihapus dari keranjang.";
+                    continue;
+                }
+
+                // 2. Check if product is active
+                if (! $product->is_active) {
+                    $item->delete();
+                    $itemsRemoved = true;
+                    $warnings[] = "Produk '{$product->name}' sedang tidak aktif dan telah dihapus dari keranjang.";
+                    continue;
+                }
+
+                // 3. Check stock availability
+                if (! $product->hasStock($item->quantity)) {
+                    if ($product->stock <= 0) {
+                        $errors[] = "Stok produk '{$product->name}' habis.";
+                    } else {
+                        $errors[] = "Stok produk '{$product->name}' tidak mencukupi. Tersedia {$product->stock} item (Anda memiliki {$item->quantity} di keranjang).";
+                    }
+                }
+
+                // 4. Check order constraints
+                if (! $product->isAvailableForOrder($item->quantity)) {
+                    $errors[] = $product->getAvailabilityMessage($item->quantity) . " untuk '{$product->name}'.";
+                }
+
+                // 5. Automatic price synchronization
+                $currentPrice = $product->getCurrentPrice();
+                if ((float) $item->unit_price !== (float) $currentPrice) {
+                    $item->unit_price = $currentPrice;
+                    $item->subtotal = $currentPrice * $item->quantity;
+                    $item->save();
+                    $warnings[] = "Harga untuk '{$product->name}' telah berubah menjadi Rp " . number_format($currentPrice, 0, ',', '.') . ".";
+                }
+            }
+
+            if ($itemsRemoved) {
+                $cart->recalculateTotals();
+                $errors[] = "Beberapa produk yang tidak tersedia telah otomatis dihapus dari keranjang. Silakan periksa kembali pesanan Anda.";
+            }
 
             return [
-                'valid' => false,
+                'valid' => empty($errors),
                 'errors' => $errors,
                 'warnings' => $warnings,
-                'cart' => null,
+                'cart' => $cart->fresh(),
             ];
-        }
-
-        foreach ($cart->items as $item) {
-            $product = $item->product;
-
-            if (! $product->is_active) {
-                $errors[] = "Product '{$product->name}' is no longer available.";
-            }
-
-            if (! $product->hasStock($item->quantity)) {
-                $errors[] = "Product '{$product->name}' is out of stock. Only {$product->stock} item(s) available (you have {$item->quantity} in cart).";
-            }
-
-            if (! $product->isAvailableForOrder($item->quantity)) {
-                $errors[] = $product->getAvailabilityMessage($item->quantity)." for '{$product->name}'.";
-            }
-
-            $currentPrice = $product->getCurrentPrice();
-            if ((float) $item->unit_price !== (float) $currentPrice) {
-                $warnings[] = "Price for '{$product->name}' has changed from Rp ".number_format($item->unit_price, 0, ',', '.').' to Rp '.number_format($currentPrice, 0, ',', '.').'.';
-            }
-        }
-
-        return [
-            'valid' => empty($errors),
-            'errors' => $errors,
-            'warnings' => $warnings,
-            'cart' => $cart,
-        ];
+        });
     }
 
     public function syncPrices(int $userId): void
@@ -232,7 +272,16 @@ class CartService
         }
 
         foreach ($cart->items as $item) {
-            $currentPrice = $item->product->getCurrentPrice();
+            /** @var CartItem $item */
+            $product = $item->product;
+            
+            if (!$product) {
+                $item->delete();
+                continue;
+            }
+
+            /** @var Product $product */
+            $currentPrice = $product->getCurrentPrice();
 
             if ((float) $item->unit_price !== (float) $currentPrice) {
                 $item->unit_price = $currentPrice;

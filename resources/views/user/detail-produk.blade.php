@@ -56,8 +56,8 @@
             
             <div class="text-left md:text-right shrink-0">
                 <div class="text-3xl font-bold text-primary-600 mb-1">{{ $product->getFormattedPrice() }}</div>
-                @if($product->original_price && $product->original_price > $product->price)
-                    <div class="text-gray-400 line-through text-sm">Rp {{ number_format($product->original_price, 0, ',', '.') }}</div>
+                @if($product->hasDiscount())
+                    <div class="text-gray-400 line-through text-sm">{{ $product->getFormattedOriginalPrice() }}</div>
                 @endif
             </div>
         </div>

@@ -237,34 +237,8 @@
         </div>
 
         <!-- Pagination -->
-        <div class="p-5 flex flex-col sm:flex-row items-center justify-between text-sm bg-gradient-to-r from-primary-50/30 to-primary-50/10 border-t border-primary-100 gap-4">
-            <span class="text-gray-500 font-medium text-center sm:text-left">
-                Menampilkan <span class="text-gray-900 font-bold">{{ $orders->firstItem() ?? 0 }}-{{ $orders->lastItem() ?? 0 }}</span> 
-                dari <span class="text-gray-900 font-bold">{{ $orders->total() }}</span> total pesanan
-            </span>
-            <div class="flex gap-2">
-                @if($orders->onFirstPage())
-                    <button disabled class="btn-secondary h-8 px-3 text-xs opacity-50 cursor-not-allowed border-gray-200">Sebelumnya</button>
-                @else
-                    <a href="{{ $orders->previousPageUrl() }}" class="btn-secondary h-8 px-3 text-xs border-gray-200 hover:bg-gray-50 hover:text-gray-900">Sebelumnya</a>
-                @endif
-                
-                <div class="flex items-center gap-1">
-                    @foreach($orders->getUrlRange(1, $orders->lastPage()) as $page => $url)
-                        @if($page == $orders->currentPage())
-                            <button class="icon-button rounded-lg bg-primary-600 text-white font-bold shadow-sm min-w-[44px]">{{ $page }}</button>
-                        @else
-                            <a href="{{ $url }}" class="icon-button rounded-lg border border-gray-200 bg-white text-gray-600 hover:bg-gray-50 transition-colors font-medium min-w-[44px]">{{ $page }}</a>
-                        @endif
-                    @endforeach
-                </div>
-                
-                @if($orders->hasMorePages())
-                    <a href="{{ $orders->nextPageUrl() }}" class="btn-secondary h-8 px-3 text-xs border-gray-200 hover:bg-gray-50 hover:text-gray-900">Selanjutnya</a>
-                @else
-                    <button disabled class="btn-secondary h-8 px-3 text-xs opacity-50 cursor-not-allowed border-gray-200">Selanjutnya</button>
-                @endif
-            </div>
+        <div class="bg-gradient-to-r from-primary-50/30 to-primary-50/10 border-t border-primary-100 p-5 flex w-full">
+            {{ $orders->links('vendor.pagination.custom') }}
         </div>
     </div>
 

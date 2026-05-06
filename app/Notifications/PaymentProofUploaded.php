@@ -78,17 +78,20 @@ class PaymentProofUploaded extends Notification implements ShouldQueue
      */
     public function toDatabase(object $notifiable): DatabaseMessage
     {
+        $userName = optional($this->order->user)->name ?? 'Pelanggan';
+        
         return new DatabaseMessage([
             'order_id' => $this->order->id,
             'order_number' => $this->order->order_number,
             'payment_proof_id' => $this->paymentProof->id,
             'user_id' => $this->order->user_id,
-            'user_name' => $this->order->user->name,
+            'user_name' => $userName,
             'total_amount' => $this->order->total_amount,
-            'status' => 'menunggu_verifikasi',
-            'action_url' => route('admin.payment-proofs.show', $this->paymentProof),
-            'action_text' => 'Verifikasi Sekarang',
-            'message' => "Bukti pembayaran baru dari {$this->order->user->name}",
+            'title' => 'Bukti Pembayaran Baru',
+            'message' => "Bukti pembayaran baru telah diunggah oleh {$userName} untuk pesanan #{$this->order->order_number}",
+            'action_url' => route('admin.verifikasi.show', $this->paymentProof),
+            'type' => 'payment_proof',
+            'icon' => 'ph-currency-dollar-simple'
         ]);
     }
 }

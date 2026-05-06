@@ -58,12 +58,12 @@ class Cart extends Model
     {
         $this->load('items.product');
 
-        return $this->items->sum(function ($item) {
+        return (float) $this->items->sum(function ($item) {
             if (! $item->product) {
                 return 0;
             }
 
-            return $item->product->price * $item->quantity;
+            return $item->product->getCurrentPrice() * $item->quantity;
         });
     }
 

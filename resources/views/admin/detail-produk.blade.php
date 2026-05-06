@@ -55,7 +55,7 @@
 
             <!-- Main Image -->
             <div class="card p-2 bg-white flex items-center justify-center aspect-square overflow-hidden group">
-                <img loading="lazy" id="admin-main-product-image" src="{{ $mainImage }}" alt="{{ $product->name }}" class="w-full h-full object-cover rounded-xl transition-transform duration-500 group-hover:scale-110">
+                <img loading="lazy" id="admin-main-product-image" src="{{ $mainImage }}" alt="{{ $product->name }}" class="w-full h-full object-contain rounded-xl transition-transform duration-500 group-hover:scale-110">
             </div>
 
             <!-- Thumbnails -->
@@ -63,7 +63,7 @@
             <div class="grid grid-cols-4 gap-3">
                 @foreach($galleryImages as $index => $image)
                 <button type="button" onclick="document.getElementById('admin-main-product-image').src='{{ $image }}'" class="{{ $index === 0 ? 'border-2 border-primary-500' : 'border-2 border-transparent hover:border-primary-300' }} rounded-lg overflow-hidden cursor-pointer shadow-sm relative transition-colors">
-                    <img loading="lazy" src="{{ $image }}" alt="Thumb {{ $index + 1 }}" class="w-full h-full object-cover aspect-square {{ $index !== 0 ? 'opacity-70 hover:opacity-100' : '' }}">
+                    <img loading="lazy" src="{{ $image }}" alt="Thumb {{ $index + 1 }}" class="w-full h-full object-contain aspect-square {{ $index !== 0 ? 'opacity-70 hover:opacity-100' : '' }}">
                 </button>
                 @endforeach
             </div>
@@ -92,9 +92,14 @@
                         </div>
                     </div>
                     
-                    <div class="text-left sm:text-right shrink-0 bg-amber-50 rounded-xl p-4 border border-amber-100">
+                    <div class="text-left sm:text-right shrink-0 bg-amber-50 rounded-xl p-4 border border-amber-100 min-w-[160px]">
                         <p class="text-xs font-bold text-amber-600 uppercase tracking-wider mb-1">Harga Jual</p>
-                        <p class="text-3xl font-black text-amber-500">Rp {{ number_format($product->price, 0, ',', '.') }}</p>
+                        @if($product->hasDiscount())
+                            <p class="text-sm font-bold text-gray-400 line-through decoration-red-400/50">Rp {{ number_format($product->getOriginalPrice(), 0, ',', '.') }}</p>
+                            <p class="text-3xl font-black text-amber-500">Rp {{ number_format($product->getCurrentPrice(), 0, ',', '.') }}</p>
+                        @else
+                            <p class="text-3xl font-black text-amber-500">Rp {{ number_format($product->price, 0, ',', '.') }}</p>
+                        @endif
                         <p class="text-xs text-amber-700/80 font-medium text-right mt-1">/ {{ $product->unit ?? 'Unit' }}</p>
                     </div>
                 </div>

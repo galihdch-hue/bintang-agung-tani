@@ -8,13 +8,6 @@
     <!-- Header Section -->
     <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-2">
         <div>
-            <nav class="flex text-sm text-gray-500 mb-2" aria-label="Breadcrumb">
-                <ol class="inline-flex items-center space-x-1 md:space-x-2">
-                    <li class="inline-flex items-center">
-                        <span class="text-gray-900 font-medium">Dashboard Administrator</span>
-                    </li>
-                </ol>
-            </nav>
             <h1 class="text-[28px] md:text-3xl font-bold text-gray-900 tracking-tight">Dashboard Admin</h1>
             <p class="text-gray-500 mt-1 text-sm">Ringkasan aktivitas dan performa toko hari ini.</p>
         </div>
@@ -92,9 +85,6 @@
 
         <!-- Total Pendapatan -->
         <div class="bg-gradient-to-br from-primary-600 to-primary-700 rounded-2xl p-5 border border-primary-500 shadow-md group cursor-pointer relative overflow-hidden">
-            <div class="absolute top-0 right-0 p-4 opacity-10">
-                <i class="ph ph-wallet ph-fill w-24 h-24 text-white transform translate-x-4 -translate-y-4"></i>
-            </div>
             <div class="relative z-10">
                 <div class="flex items-center justify-between mb-4">
                     <div class="bg-white/20 p-2.5 rounded-xl text-white ring-1 ring-white/30">
@@ -106,6 +96,42 @@
             </div>
             <h3 class="text-2xl font-bold text-white leading-none mb-1">{{ 'Rp' . number_format($totalRevenue, 0, ',', '.') }}</h3>
             <p class="text-sm text-primary-100 font-medium">Total Pendapatan</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Order Status Summary (Secondary Stats) -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <!-- Menunggu Verifikasi -->
+        <div class="bg-white border border-orange-100 rounded-xl p-4 flex items-center gap-4 shadow-sm">
+            <div class="w-12 h-12 bg-orange-50 rounded-full flex items-center justify-center text-orange-600">
+                <i class="ph ph-shield-check w-6 h-6"></i>
+            </div>
+            <div>
+                <p class="text-xs font-bold text-orange-600 uppercase tracking-wider">Perlu Verifikasi</p>
+                <h4 class="text-xl font-bold text-gray-900">{{ $pendingOrders }} <span class="text-sm font-medium text-gray-500">Pesanan</span></h4>
+            </div>
+        </div>
+
+        <!-- Sedang Diproses -->
+        <div class="bg-white border border-blue-100 rounded-xl p-4 flex items-center gap-4 shadow-sm">
+            <div class="w-12 h-12 bg-blue-50 rounded-full flex items-center justify-center text-blue-600">
+                <i class="ph ph-spinner w-6 h-6"></i>
+            </div>
+            <div>
+                <p class="text-xs font-bold text-blue-600 uppercase tracking-wider">Sedang Diproses</p>
+                <h4 class="text-xl font-bold text-gray-900">{{ $processingOrders }} <span class="text-sm font-medium text-gray-500">Pesanan</span></h4>
+            </div>
+        </div>
+
+        <!-- Selesai via Scan -->
+        <div class="bg-white border border-green-100 rounded-xl p-4 flex items-center gap-4 shadow-sm">
+            <div class="w-12 h-12 bg-green-50 rounded-full flex items-center justify-center text-green-600">
+                <i class="ph ph-qr-code w-6 h-6"></i>
+            </div>
+            <div>
+                <p class="text-xs font-bold text-green-600 uppercase tracking-wider">Selesai via Scan</p>
+                <h4 class="text-xl font-bold text-gray-900">{{ $completedAfterScanOrders }} <span class="text-sm font-medium text-gray-500">Pesanan</span></h4>
             </div>
         </div>
     </div>

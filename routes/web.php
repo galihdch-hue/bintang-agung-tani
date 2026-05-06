@@ -13,7 +13,6 @@
  */
 
 use App\Http\Controllers\Admin\CategoryController;
-use App\Http\Controllers\Admin\ContactMessageController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\NotificationController;
 use App\Http\Controllers\Admin\OrderController as AdminOrderController;
@@ -246,7 +245,7 @@ Route::prefix('admin')->middleware(['auth', 'admin'])->group(function () {
     $order = session()->has('scanned_order_id') ? \App\Models\Order::find(session()->get('scanned_order_id')) : null;
 
     return view('admin.scan-barcode', compact('order'));
-  });
+  })->name('admin.scan');
   Route::get('/verifikasi-pembayaran', function () {
     return redirect('/admin/verifikasi');
   });
@@ -302,19 +301,15 @@ Route::prefix('admin')->middleware(['auth', 'admin'])->group(function () {
   Route::post('/settings/reset', [SettingsController::class, 'reset'])->name('admin.settings.reset');
 
   // Notification Routes
+  Route::get('/api/notifications/count', [NotificationController::class, 'getUnreadCount'])->name('admin.notifications.count');
   Route::get('/notifications', [NotificationController::class, 'index'])->name('admin.notifications.index');
   Route::get('/notifications/unread', [NotificationController::class, 'unread'])->name('admin.notifications.unread');
-  Route::patch('/notifications/{id}/mark-read', [NotificationController::class, 'markAsRead'])->name('admin.notifications.mark-read');
   Route::post('/notifications/mark-all-read', [NotificationController::class, 'markAllAsRead'])->name('admin.notifications.mark-all-read');
+  Route::patch('/notifications/{id}/mark-read', [NotificationController::class, 'markAsRead'])->name('admin.notifications.mark-read');
   Route::delete('/notifications/{id}', [NotificationController::class, 'destroy'])->name('admin.notifications.destroy');
-  Route::get('/api/notifications/count', [NotificationController::class, 'getUnreadCount'])->name('admin.notifications.count');
+  Route::delete('/notifications/delete-all', [NotificationController::class, 'deleteAll'])->name('admin.notifications.delete-all');
+  Route::get('/notifications/delete-all', function() {
+      return redirect()->route('admin.notifications.index');
+  });
 
-  // Contact Message Routes
-  Route::get('/messages', [ContactMessageController::class, 'index'])->name('admin.messages.index');
-  Route::get('/messages/unread', [ContactMessageController::class, 'unread'])->name('admin.messages.unread');
-  Route::get('/messages/{id}', [ContactMessageController::class, 'show'])->name('admin.messages.show');
-  Route::patch('/messages/{id}/mark-read', [ContactMessageController::class, 'markAsRead'])->name('admin.messages.mark-read');
-  Route::post('/messages/mark-all-read', [ContactMessageController::class, 'markAllAsRead'])->name('admin.messages.mark-all-read');
-  Route::delete('/messages/{id}', [ContactMessageController::class, 'destroy'])->name('admin.messages.destroy');
-  Route::get('/api/messages/count', [ContactMessageController::class, 'getUnreadCount'])->name('admin.messages.count');
 });

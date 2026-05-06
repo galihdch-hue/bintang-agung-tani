@@ -15,7 +15,7 @@
         'https://ui-avatars.com/api/?name=' . urlencode($authName) . '&background=ecfdf5&color=059669&size=32';
 @endphp
 
-<nav class="sticky top-0 z-40 bg-linear-to-r from-emerald-600 to-emerald-700 backdrop-blur-sm shadow-sm border-b border-emerald-800"
+<nav class="sticky top-0 z-40 bg-gradient-to-r from-primary-600 to-primary-700 backdrop-blur-sm shadow-sm border-b border-primary-800"
     x-data="{ mobileMenu: false }">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex items-center justify-between h-16">
@@ -40,40 +40,34 @@
             {{-- Right Side Actions --}}
             <div class="flex items-center gap-4">
                 {{-- Search Bar (Desktop) --}}
-                <div class="hidden md:block relative">
+                <div class="hidden md:block relative group">
                     <input type="text" placeholder="Cari produk..."
-                        class="search-bar-desktop bg-white/90! text-gray-900! placeholder-gray-500! border-white/80! focus:bg-white! focus:text-gray-900! focus:border-white! shadow-sm"
+                        class="w-64 bg-white/10 border border-white/20 text-white placeholder-white/60 text-sm rounded-xl pl-10 pr-4 py-2 focus:outline-none focus:bg-white/20 focus:border-white/30 focus:ring-4 focus:ring-white/10 transition-all duration-200"
                         aria-label="Cari produk"
                         onkeyup="if(event.key==='Enter') window.location.href='/user/produk?search='+this.value">
+                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                        <i class="ph ph-magnifying-glass w-4 h-4 text-white/60 group-focus-within:text-white transition-colors"></i>
+                    </div>
                 </div>
 
                 {{-- Cart --}}
                 <a href="/user/keranjang"
-                    class="relative icon-button text-white/85 hover:text-white hover:bg-white/10 rounded-lg transition-colors focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-emerald-700"
+                    class="relative p-2 text-white/80 hover:text-white hover:bg-white/10 rounded-xl transition-all group"
                     aria-label="Keranjang belanja">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z">
-                        </path>
-                    </svg>
+                    <i class="ph ph-shopping-cart w-6 h-6 group-hover:scale-110 transition-transform"></i>
                     @if ($cartCount > 0)
-                        <span class="cart-badge">{{ $cartCount > 99 ? '99+' : $cartCount }}</span>
+                        <span class="absolute -top-1 -right-1 bg-amber-400 text-white text-[10px] font-bold w-4 h-4 flex items-center justify-center rounded-full border-2 border-primary-600">{{ $cartCount > 99 ? '99+' : $cartCount }}</span>
                     @endif
                 </a>
 
                 {{-- User Menu --}}
                 <div class="relative" x-data="{ open: false }" @click.away="open = false">
                     <button @click="open = !open"
-                        class="flex items-center gap-2 icon-button rounded-lg bg-white/15 hover:bg-white/20 transition-colors focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-emerald-700 focus:outline-none text-white"
-                        aria-label="Menu pengguna">
+                        class="flex items-center gap-2.5 bg-white/10 hover:bg-white/20 p-1.5 rounded-xl border border-white/20 transition-all focus:outline-none text-white group">
                         <img src="{{ $authPhotoUrl }}" alt="{{ $authName }}"
-                            class="w-8 h-8 rounded-full object-cover ring-2 ring-emerald-300">
-                        <span class="hidden md:inline text-sm font-medium text-white">{{ $authName }}</span>
-                        <svg class="w-4 h-4 text-white/70 transition-transform" :class="{ 'rotate-180': open }"
-                            fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7">
-                            </path>
-                        </svg>
+                            class="w-8 h-8 rounded-full object-cover ring-2 ring-primary-300 shadow-sm">
+                        <span class="hidden md:inline text-sm font-medium">{{ $authName }}</span>
+                        <i class="ph ph-caret-down w-3.5 h-3.5 text-white/60 transition-transform group-hover:text-white" :class="{ 'rotate-180': open }"></i>
                     </button>
 
                     {{-- Dropdown --}}
@@ -90,28 +84,17 @@
                         <a href="/user/profil"
                             class="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
                             role="menuitem">
-                            <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
-                            </svg> Profil
+                            <i class="ph ph-user w-4 h-4 text-gray-400"></i> Profil
                         </a>
                         <a href="/user/riwayat"
                             class="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
                             role="menuitem">
-                            <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01">
-                                </path>
-                            </svg> Pesanan
+                            <i class="ph ph-receipt w-4 h-4 text-gray-400"></i> Pesanan
                         </a>
                         <a href="/user/bantuan"
                             class="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
                             role="menuitem">
-                            <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z">
-                                </path>
-                            </svg> Bantuan
+                            <i class="ph ph-info w-4 h-4 text-gray-400"></i> Bantuan
                         </a>
                         <div class="border-t border-gray-100 mt-1 pt-1">
                             <form action="/logout" method="POST" role="menuitem">
@@ -132,7 +115,7 @@
                 {{-- Mobile Menu Button --}}
                 <div class="md:hidden">
                     <button @click="mobileMenu = !mobileMenu"
-                        class="icon-button text-white/85 hover:text-white hover:bg-white/10 rounded-lg transition-colors focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-emerald-700"
+                        class="icon-button text-white/85 hover:text-white hover:bg-white/10 rounded-lg transition-colors focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-primary-700"
                         aria-label="Toggle menu">
                         <svg class="w-6 h-6" :class="{ 'hidden': mobileMenu }" fill="none" stroke="currentColor"
                             viewBox="0 0 24 24">
@@ -187,7 +170,7 @@
                     <span>Keranjang</span>
                     @if ($cartCount > 0)
                         <span
-                            class="ml-auto bg-emerald-600 text-white text-xs font-bold px-2 py-0.5 rounded-full">{{ $cartCount }}</span>
+                            class="ml-auto bg-primary-600 text-white text-xs font-bold px-2 py-0.5 rounded-full">{{ $cartCount }}</span>
                     @endif
                 </a>
                 <a href="/user/riwayat"

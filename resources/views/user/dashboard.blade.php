@@ -43,8 +43,8 @@ $authUser = auth()->user();
         {{-- Cart Stats --}}
         <div class="card p-5">
             <div class="flex items-start justify-between mb-4">
-                <div class="w-12 h-12 bg-emerald-50 rounded-xl flex items-center justify-center">
-                    <i class="ph ph-shopping-cart text-emerald-600 text-xl"></i>
+                <div class="w-12 h-12 bg-primary-50 rounded-xl flex items-center justify-center">
+                    <i class="ph ph-shopping-cart text-primary-600 text-xl"></i>
                 </div>
                 <span class="text-xs font-semibold text-gray-400 bg-gray-50 px-2 py-1 rounded-lg">Real-time</span>
             </div>
@@ -102,7 +102,7 @@ $authUser = auth()->user();
                 <div class="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center">
                     <i class="ph ph-wallet text-purple-600 text-xl"></i>
                 </div>
-                <div class="flex items-center gap-1 text-xs font-semibold {{ ($growthPercentage ?? 0) >= 0 ? 'text-emerald-600' : 'text-red-600' }} bg-gray-50 px-2 py-1 rounded-lg">
+                <div class="flex items-center gap-1 text-xs font-semibold {{ ($growthPercentage ?? 0) >= 0 ? 'text-primary-600' : 'text-red-600' }} bg-gray-50 px-2 py-1 rounded-lg">
                     <i class="ph ph-trend-up w-3 h-3"></i>
                     {{ ($growthPercentage ?? 0) >= 0 ? '+' : '' }}{{ $growthPercentage ?? 0 }}%
                 </div>

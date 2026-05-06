@@ -20,7 +20,7 @@
     </div>
 
     @if(session('success'))
-        <div class="bg-emerald-50 border border-emerald-200 text-emerald-700 px-4 py-3 rounded-xl flex items-center gap-3">
+        <div class="bg-primary-50 border border-primary-200 text-primary-700 px-4 py-3 rounded-xl flex items-center gap-3">
             <i class="ph ph-check-circle w-5 h-5"></i>
             <span>{{ session('success') }}</span>
         </div>

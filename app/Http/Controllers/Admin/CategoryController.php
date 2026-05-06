@@ -64,10 +64,10 @@ class CategoryController extends Controller
      */
     public function destroy(Category $category)
     {
-        // Check if category has products
-        if ($category->products()->count() > 0) {
+        // Check if category has products (including soft deleted ones to respect DB constraints)
+        if ($category->products()->withTrashed()->count() > 0) {
             return redirect('/admin/kategori')
-                ->with('error', 'Kategori tidak dapat dihapus karena masih memiliki produk');
+                ->with('error', 'Kategori tidak dapat dihapus karena masih memiliki produk (termasuk produk yang sudah dihapus)');
         }
 
         $category->delete();

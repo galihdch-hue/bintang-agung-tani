@@ -134,11 +134,9 @@
 
         <!-- Pagination -->
         <div class="p-5 border-t border-gray-100 flex items-center justify-between text-sm bg-white">
-            <span class="text-gray-500 font-medium">Menampilkan <span class="text-gray-900 font-bold">{{ $categories->firstItem() ?? 0 }}-{{ $categories->lastItem() ?? 0 }}</span> dari <span class="text-gray-900 font-bold">{{ $categories->total() }}</span> kategori</span>
-            
-            <nav aria-label="Page navigation">
-                {{ $categories->links() }}
-            </nav>
+            <div class="w-full">
+                {{ $categories->links('vendor.pagination.custom') }}
+            </div>
         </div>
     </div>
 

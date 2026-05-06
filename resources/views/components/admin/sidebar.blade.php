@@ -29,10 +29,7 @@
             <img loading="lazy" src="https://ui-avatars.com/api/?name={{ $avatarName }}&background=ecfdf5&color=059669" alt="{{ $authName }}" class="w-10 h-10 rounded-xl object-cover shrink-0 ring-2 ring-white shadow-soft">
             <div class="min-w-0 flex-1">
                 <h3 class="font-bold text-gray-900 text-sm leading-tight truncate">{{ $authName }}</h3>
-                <span class="inline-flex items-center gap-1.5 px-2 py-0.5 mt-0.5 rounded-lg bg-primary-50 text-primary-700 font-medium text-[10px] border border-primary-100">
-                    <i class="ph-fill ph-shield-check w-3 h-3"></i>
-                    Administrator
-                </span>
+                <span class="text-[10px] text-gray-500 font-medium">Logged in as Admin</span>
             </div>
         </div>
     </div>
@@ -53,6 +50,17 @@
         <x-admin.sidebar-link href="/admin/verifikasi" icon="ph-seal-check" :active="request()->is('admin/verifikasi*')">Verifikasi Pembayaran</x-admin.sidebar-link>
         <x-admin.sidebar-link href="/admin/payment-methods" icon="ph-wallet" :active="request()->is('admin/payment-methods*')">Metode Pembayaran</x-admin.sidebar-link>
         <x-admin.sidebar-link href="/admin/scan" icon="ph-scan" :active="request()->is('admin/scan*')">Scan QR Pengambilan</x-admin.sidebar-link>
+
+        <!-- Komunikasi & Layanan -->
+        <div class="px-4 pt-6 pb-2">
+            <span class="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] px-4">Komunikasi & Layanan</span>
+        </div>
+        <div class="space-y-1 px-3">
+            <x-admin.sidebar-link :href="route('admin.notifications.index')" :active="request()->routeIs('admin.notifications.*')" icon="ph-bell" :badge="auth()->user()->unreadNotifications->count() ?: null">
+                Notifikasi
+            </x-admin.sidebar-link>
+
+        </div>
 
         <div class="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-2 mt-4 px-3">Sistem</div>
         <x-admin.sidebar-link href="/admin/settings" icon="ph-gear" :active="request()->is('admin/settings*')">Pengaturan Tampilan</x-admin.sidebar-link>

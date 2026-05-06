@@ -26,7 +26,7 @@
     @click="toggleTheme()"
     type="button"
     data-testid="theme-toggle"
-    class="icon-button text-gray-600 hover:text-emerald-600 hover:bg-gray-100 rounded-lg transition-colors focus-visible:ring-2 focus-visible:ring-emerald-500 focus-visible:ring-offset-2 {{ $class }}"
+    class="icon-button text-gray-600 hover:text-primary-600 hover:bg-gray-100 rounded-lg transition-colors focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2 {{ $class }}"
     :aria-label="darkMode ? 'Switch to light mode' : 'Switch to dark mode'"
     :aria-pressed="darkMode"
 >

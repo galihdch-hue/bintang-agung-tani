@@ -78,7 +78,7 @@
                     {{-- Details --}}
                     <div class="flex-1 min-w-0">
                         <h4 class="text-sm font-medium text-gray-900 line-clamp-2 mb-1">{{ $item->product_name }}</h4>
-                        <p class="text-emerald-600 font-bold text-sm">Rp {{ number_format($item->unit_price, 0, ',', '.') }}</p>
+                        <p class="text-primary-600 font-bold text-sm">Rp {{ number_format($item->unit_price, 0, ',', '.') }}</p>
                         
                         {{-- Quantity Controls --}}
                         <div class="flex items-center justify-between mt-2">

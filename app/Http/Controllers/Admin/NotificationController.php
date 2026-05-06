@@ -45,6 +45,13 @@ class NotificationController extends Controller
         return redirect()->back()->with('success', 'Notifikasi dihapus');
     }
 
+    public function deleteAll()
+    {
+        auth()->user()->notifications()->delete();
+
+        return redirect()->back()->with('success', 'Semua notifikasi telah dihapus');
+    }
+
     public function getUnreadCount()
     {
         $count = auth()->user()->unreadNotifications()->count();

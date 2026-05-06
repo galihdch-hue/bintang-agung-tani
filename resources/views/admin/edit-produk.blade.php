@@ -138,6 +138,30 @@
                         @enderror
                     </div>
 
+                    <!-- Harga Diskon -->
+                    <div class="md:col-span-1">
+                        <label for="discount_price_display" class="block text-sm font-medium text-gray-700 mb-2">
+                            Harga Diskon (Rp) <span class="text-gray-400 text-xs font-normal ml-1">(Opsional)</span>
+                        </label>
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                                <span class="text-gray-500 font-semibold text-sm">Rp</span>
+                            </div>
+                            <input type="text" id="discount_price_display"
+                                class="block w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-gray-900 text-sm"
+                                value="{{ old('discount_price', $product->discount_price > 0 ? number_format($product->discount_price, 0, ',', '.') : '') }}"
+                                placeholder="0">
+                            <input type="hidden" id="discount_price" name="discount_price" value="{{ old('discount_price', $product->discount_price) }}">
+                        </div>
+                        @error('discount_price')
+                            <p class="mt-1.5 text-sm text-red-600">{{ $message }}</p>
+                        @enderror
+                        <p class="text-[11px] text-slate-500 flex items-start gap-1.5 mt-2 bg-slate-50 p-2 rounded-lg border border-slate-100">
+                            <i class="ph-fill ph-info text-indigo-500 mt-0.5"></i>
+                            <span>Jika diisi, harga ini akan muncul sebagai <strong>harga promo</strong> dan harga normal akan <strong>dicoret</strong> di halaman depan.</span>
+                        </p>
+                    </div>
+
                     <!-- Stok -->
                     <div class="md:col-span-1">
                         <label for="stock" class="block text-sm font-medium text-gray-700 mb-2">
@@ -331,6 +355,8 @@
     // Format harga dengan pemisah ribuan
     const priceDisplay = document.getElementById('price_display');
     const priceHidden = document.getElementById('price');
+    const discountPriceDisplay = document.getElementById('discount_price_display');
+    const discountPriceHidden = document.getElementById('discount_price');
 
     function formatNumber(num) {
         return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
@@ -375,6 +401,49 @@
         });
 
         priceDisplay.addEventListener('blur', function() {
+            let value = this.value.replace(/[^\d]/g, '');
+            if (value) {
+                this.value = formatNumber(value);
+            }
+        });
+    }
+
+    // Logic for Discount Price
+    if (discountPriceDisplay) {
+        let initialValue = discountPriceDisplay.value;
+        if (initialValue) {
+            discountPriceDisplay.value = formatNumber(unformatNumber(initialValue));
+        }
+
+        discountPriceDisplay.addEventListener('input', function(e) {
+            let cursorPos = this.selectionStart;
+            let oldLength = this.value.length;
+            let value = this.value.replace(/[^\d]/g, '');
+
+            if (value) {
+                this.value = formatNumber(value);
+                discountPriceHidden.value = value;
+                let newLength = this.value.length;
+                cursorPos += (newLength - oldLength);
+                this.setSelectionRange(cursorPos, cursorPos);
+            } else {
+                this.value = '';
+                discountPriceHidden.value = '';
+            }
+        });
+
+        discountPriceDisplay.addEventListener('keydown', function(e) {
+            if ([8, 46, 9, 27, 13].includes(e.keyCode) ||
+                (e.ctrlKey === true && [65, 67, 86, 88].includes(e.keyCode)) ||
+                (e.keyCode >= 35 && e.keyCode <= 39)) {
+                return;
+            }
+            if ((e.shiftKey || (e.keyCode < 48 || e.keyCode > 57)) && (e.keyCode < 96 || e.keyCode > 105)) {
+                e.preventDefault();
+            }
+        });
+
+        discountPriceDisplay.addEventListener('blur', function() {
             let value = this.value.replace(/[^\d]/g, '');
             if (value) {
                 this.value = formatNumber(value);

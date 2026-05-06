@@ -223,8 +223,8 @@ $totalProducts = $products->total() ?? 0;
                 
                 {{-- Pagination --}}
                 @if($products->hasPages())
-                <div class="mt-8 pt-6 border-t border-gray-100">
-                    {{ $products->links() }}
+                <div class="mt-8 pt-6 border-t border-gray-100 flex w-full">
+                    {{ $products->links('vendor.pagination.custom') }}
                 </div>
                 @endif
             </div>

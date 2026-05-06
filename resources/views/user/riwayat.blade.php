@@ -132,15 +132,57 @@
                                 {{ $order->getStatusLabel() }}
                             </span>
                         </td>
-                        <td class="px-6 py-5 align-top text-right">
+                        <td class="px-6 py-5 align-top text-right" x-data="{ showCancelModal: false }">
                             <div class="font-bold text-gray-900 text-base">{{ $order->getFormattedTotal() }}</div>
                             @if($order->canBeCancelled())
-                            <form action="{{ route('user.orders.cancel', $order) }}" method="POST" class="inline" onsubmit="return confirm('Yakin ingin membatalkan pesanan ini?');">
-                                @csrf
-                                <button type="submit" class="btn-danger mt-3 text-xs py-2 px-3 inline-flex items-center gap-1">
-                                    <i class="ph ph-x-circle ph-bold"></i> Batalkan
+                                <button type="button" @click="showCancelModal = true" class="inline-flex items-center gap-1.5 px-3 py-1.5 mt-3 bg-white border border-red-200 text-red-600 rounded-lg hover:bg-red-600 hover:text-white transition-all duration-300 text-xs font-bold shadow-sm hover:shadow-md group">
+                                    <i class="ph ph-x-circle ph-bold w-3.5 h-3.5 group-hover:scale-110 transition-transform"></i> Batalkan
                                 </button>
-                            </form>
+
+                                <!-- Modal Konfirmasi Pembatalan -->
+                                <template x-teleport="body">
+                                    <div x-show="showCancelModal" 
+                                         x-transition:enter="transition ease-out duration-300"
+                                         x-transition:enter-start="opacity-0"
+                                         x-transition:enter-end="opacity-100"
+                                         x-transition:leave="transition ease-in duration-200"
+                                         x-transition:leave-start="opacity-100"
+                                         x-transition:leave-end="opacity-0"
+                                         class="fixed inset-0 z-[999] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+                                        
+                                        <div x-show="showCancelModal"
+                                             x-transition:enter="transition ease-out duration-300"
+                                             x-transition:enter-start="opacity-0 scale-95 translate-y-4"
+                                             x-transition:enter-end="opacity-100 scale-100 translate-y-0"
+                                             x-transition:leave="transition ease-in duration-200"
+                                             x-transition:leave-start="opacity-100 scale-100 translate-y-0"
+                                             x-transition:leave-end="opacity-0 scale-95 translate-y-4"
+                                             @click.away="showCancelModal = false"
+                                             class="bg-white rounded-3xl shadow-2xl max-w-md w-full overflow-hidden border border-gray-100 text-left">
+                                            
+                                            <div class="p-8 text-center">
+                                                <div class="w-16 h-16 bg-red-50 text-red-500 rounded-full flex items-center justify-center mx-auto mb-5 ring-4 ring-red-50/50">
+                                                    <i class="ph ph-warning-circle ph-fill text-3xl"></i>
+                                                </div>
+                                                
+                                                <h3 class="text-xl font-black text-gray-900 mb-2 tracking-tight">Batalkan Pesanan?</h3>
+                                                <p class="text-gray-500 text-sm leading-relaxed font-medium px-4">Apakah Anda yakin ingin membatalkan pesanan <span class="text-gray-900 font-bold">#{{ $order->order_number }}</span> ini? Tindakan ini permanen.</p>
+                                                
+                                                <div class="grid grid-cols-2 gap-3 mt-8">
+                                                    <button @click="showCancelModal = false" type="button" class="px-5 py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl font-bold transition-all text-xs">
+                                                        Kembali
+                                                    </button>
+                                                    <form action="{{ route('user.orders.cancel', $order) }}" method="POST">
+                                                        @csrf
+                                                        <button type="submit" class="w-full px-5 py-2.5 bg-red-600 hover:bg-red-700 text-white rounded-xl font-bold transition-all shadow-lg shadow-red-200 text-xs">
+                                                            Ya, Batalkan
+                                                        </button>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </template>
                             @elseif($order->canBePaid())
                             <a href="{{ route('user.payments.select-method', $order) }}" class="btn-primary mt-3 text-xs py-2 px-3 inline-flex items-center gap-1">
                                 Bayar Sekarang
@@ -180,8 +222,8 @@
             <span class="text-sm text-gray-500 font-medium">Menampilkan {{ $orders->firstItem() }}-{{ $orders->lastItem() }} dari {{ $orders->total() }} pesanan</span>
             @endif
             
-            <nav aria-label="Page navigation" class="mx-auto sm:mx-0">
-                {{ $orders->links() }}
+            <nav aria-label="Page navigation" class="mx-auto sm:mx-0 w-full flex">
+                {{ $orders->links('vendor.pagination.custom') }}
             </nav>
 
         </div>

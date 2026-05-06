@@ -9,7 +9,7 @@ use Illuminate\Notifications\Messages\DatabaseMessage;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-class OrderCreated extends Notification
+class NewOrderAdmin extends Notification
 {
     use Queueable;
 
@@ -39,35 +39,17 @@ class OrderCreated extends Notification
     public function toMail(object $notifiable): MailMessage
     {
         $orderNumber = $this->order->order_number;
+        $customerName = optional($this->order->user)->name ?? 'Pelanggan';
         $total = number_format($this->order->total_amount, 0, ',', '.');
 
         return (new MailMessage)
-            ->subject("Pesanan #{$orderNumber} Berhasil Dibuat")
-            ->greeting("Halo {$notifiable->name},")
-            ->line('Pesanan Anda telah berhasil dibuat.')
+            ->subject("Pesanan Baru Masuk - #{$orderNumber}")
+            ->greeting('Halo Admin,')
+            ->line("Ada pesanan baru dari pelanggan {$customerName}.")
             ->line("Nomor Pesanan: #{$orderNumber}")
             ->line("Total: Rp {$total}")
-            ->line('Status: Belum Bayar')
-            ->action('Lihat Pesanan', route('user.orders.show', $this->order))
-            ->action('Upload Bukti Pembayaran', route('user.payments.select-method', $this->order))
-            ->line('Silakan lakukan pembayaran dan upload bukti pembayaran Anda.');
-    }
-
-    /**
-     * Get the array representation of the notification.
-     *
-     * @return array<string, mixed>
-     */
-    public function toArray(object $notifiable): array
-    {
-        return [
-            'order_id' => $this->order->id,
-            'order_number' => $this->order->order_number,
-            'total_amount' => $this->order->total_amount,
-            'status' => $this->order->status,
-            'status_label' => $this->order->getStatusLabel(),
-            'item_count' => $this->order->items->count(),
-        ];
+            ->action('Lihat Detail Pesanan', route('admin.orders.show', $this->order))
+            ->line('Silakan cek detail pesanan dan pastikan stok tersedia.');
     }
 
     /**
@@ -78,12 +60,13 @@ class OrderCreated extends Notification
         return new DatabaseMessage([
             'order_id' => $this->order->id,
             'order_number' => $this->order->order_number,
+            'user_name' => optional($this->order->user)->name ?? 'Pelanggan',
             'total_amount' => $this->order->total_amount,
-            'status' => $this->order->status,
-            'status_label' => $this->order->getStatusLabel(),
-            'item_count' => $this->order->items->count(),
-            'action_url' => route('user.orders.show', $this->order),
-            'action_text' => 'Lihat Pesanan',
+            'title' => 'Pesanan Baru Masuk',
+            'message' => "Pesanan #{$this->order->order_number} dari " . (optional($this->order->user)->name ?? 'Pelanggan'),
+            'action_url' => route('admin.orders.show', $this->order),
+            'type' => 'new_order',
+            'icon' => 'ph-shopping-cart-simple'
         ]);
     }
 }

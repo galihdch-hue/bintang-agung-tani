@@ -38,13 +38,7 @@ if ($variant) {
             </div>
         @endif
         
-        {{-- Wishlist Button - Accessible with minimum 44px touch target --}}
-        <button type="button" 
-                class="btn absolute top-3 left-3 z-10 min-w-[44px] min-h-[44px] w-11 h-11 bg-white rounded-full flex items-center justify-center text-gray-400 shadow-md border border-gray-200 opacity-0 group-hover:opacity-100 transition-all duration-300 hover:bg-gray-50 hover:text-red-500 hover:scale-110 focus-visible:opacity-100"
-                aria-label="Tambah ke wishlist"
-                tabindex="0">
-            <i class="ph ph-heart text-lg"></i>
-        </button>
+
         
         {{-- Product Image --}}
         <a href="{{ $href }}" class="block w-full h-full overflow-hidden">

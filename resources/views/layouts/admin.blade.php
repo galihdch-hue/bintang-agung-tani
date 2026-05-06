@@ -32,17 +32,23 @@ use App\Models\Setting;
     <div class="min-h-screen flex flex-col bg-white" x-data="{ sidebarOpen: false }">
 
         <!-- Admin Navbar -->
-        @include('components.admin.navbar')
+        @if(!View::hasSection('no_navbar'))
+            @include('components.admin.navbar')
+        @endif
 
         <div class="flex flex-1 w-full relative overflow-hidden">
             <!-- Admin Sidebar -->
             @include('components.admin.sidebar')
 
             <!-- Main Content -->
-            <main id="main-content" class="flex-1 min-w-0 flex flex-col relative overflow-y-auto md:ml-72" role="main" tabindex="-1">
-                <div class="container-main py-4 md:py-5 min-h-full">
+            <main id="main-content" class="flex-1 min-w-0 flex flex-col relative overflow-y-auto @if(!View::hasSection('full_screen')) md:ml-72 @endif" role="main" tabindex="-1">
+                @if(View::hasSection('full_screen'))
                     @yield('content')
-                </div>
+                @else
+                    <div class="container-main py-4 md:py-5 min-h-full">
+                        @yield('content')
+                    </div>
+                @endif
             </main>
         </div>
     </div>

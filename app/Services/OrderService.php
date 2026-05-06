@@ -125,6 +125,32 @@ class OrderService
         ]);
       }
 
+      // Load relationships for return and notifications
+      $order->load(['items', 'user']);
+
+      // Notify User
+      try {
+        $user->notify(new \App\Notifications\OrderCreated($order));
+      } catch (Exception $e) {
+        Log::error('Failed to notify user about order creation', [
+          'order_id' => $order->id,
+          'error' => $e->getMessage(),
+        ]);
+      }
+
+      // Notify Admins
+      try {
+        $admins = User::where('is_admin', true)->get();
+        foreach ($admins as $admin) {
+          $admin->notify(new \App\Notifications\NewOrderAdmin($order));
+        }
+      } catch (Exception $e) {
+        Log::error('Failed to notify admins about new order', [
+          'order_id' => $order->id,
+          'error' => $e->getMessage(),
+        ]);
+      }
+
       // Load relationships for return
       $order->load(['items', 'user']);
 
@@ -134,6 +160,8 @@ class OrderService
 
   public function updateStatus(Order $order, string $newStatus, ?string $notes = null, ?int $changedBy = null): void
   {
+    $previousStatus = $order->status;
+
     // Validate status transition
     $validTransitions = $this->getValidStatusTransitions($order->status);
 
@@ -155,6 +183,11 @@ class OrderService
           break;
       }
     });
+
+    // Notify user of status update
+    if ($order->user) {
+      $order->user->notify(new \App\Notifications\OrderStatusUpdated($order, $previousStatus, $notes));
+    }
   }
 
   public function cancelOrder(Order $order, string $reason, ?int $changedBy = null): void
@@ -164,6 +197,14 @@ class OrderService
     }
 
     $this->updateStatus($order, Order::STATUS_CANCELLED, $reason, $changedBy);
+
+    // If cancelled by user, notify admins
+    if ($changedBy === $order->user_id) {
+        $admins = \App\Models\User::where('is_admin', true)->get();
+        foreach ($admins as $admin) {
+            $admin->notify(new \App\Notifications\NewOrderAdmin($order));
+        }
+    }
   }
 
   public function processPayment(Order $order, float $amount, string $paymentMethod, array $paymentData = [], ?int $changedBy = null): void

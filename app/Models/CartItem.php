@@ -48,7 +48,16 @@ class CartItem extends Model
     {
         $this->load('product');
 
-        return $this->product->price * $this->quantity;
+        if (!$this->product) {
+            return $this->unit_price * $this->quantity;
+        }
+
+        return $this->product->getCurrentPrice() * $this->quantity;
+    }
+
+    public function getProductNameAttribute(): string
+    {
+        return $this->product ? $this->product->name : 'Produk Tidak Tersedia';
     }
 
     public function getFormattedUnitPrice(): string

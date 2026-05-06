@@ -120,10 +120,10 @@ $totalDiscount = collect($cart['items'] ?? [])->sum(function($item) {
                                           x-ref="form">
                                         @csrf
                                         @method('PATCH')
-                                        <div class="inline-flex items-center border border-gray-200 rounded-lg bg-white overflow-hidden h-10">
+                                        <div class="inline-flex items-center border border-gray-200 rounded-xl bg-gray-50/50 overflow-hidden h-11 p-1">
                                             <button type="button" 
                                                     @click="updateQuantity(-1)"
-                                                    class="w-10 h-full flex items-center justify-center text-gray-500 hover:bg-gray-50 border-r border-gray-200 disabled:opacity-50"
+                                                    class="w-9 h-full flex items-center justify-center text-gray-500 hover:bg-white hover:text-primary-600 hover:shadow-sm rounded-lg transition-all disabled:opacity-30 disabled:cursor-not-allowed"
                                                     :disabled="qty <= 1 || submitting">
                                                 <i class="ph ph-minus text-sm" x-show="!submitting"></i>
                                                 <i class="ph ph-spinner animate-spin text-sm" x-show="submitting"></i>
@@ -132,11 +132,11 @@ $totalDiscount = collect($cart['items'] ?? [])->sum(function($item) {
                                                    name="quantity" 
                                                    x-model="qty" 
                                                    min="1" 
-                                                   class="w-12 h-full text-center text-gray-900 font-bold border-none p-0 text-sm"
+                                                   class="w-12 h-full text-center text-gray-900 font-extrabold border-none bg-transparent p-0 text-base focus:ring-0"
                                                    readonly>
                                             <button type="button" 
                                                     @click="updateQuantity(1)"
-                                                    class="w-10 h-full flex items-center justify-center text-gray-500 hover:bg-gray-50 border-l border-gray-200 disabled:opacity-50"
+                                                    class="w-9 h-full flex items-center justify-center text-gray-500 hover:bg-white hover:text-primary-600 hover:shadow-sm rounded-lg transition-all disabled:opacity-30 disabled:cursor-not-allowed"
                                                     :disabled="submitting">
                                                 <i class="ph ph-plus text-sm" x-show="!submitting"></i>
                                                 <i class="ph ph-spinner animate-spin text-sm" x-show="submitting"></i>
@@ -199,15 +199,15 @@ $totalDiscount = collect($cart['items'] ?? [])->sum(function($item) {
             </div>
             
             <!-- Action Buttons -->
-            <div class="flex flex-col sm:flex-row gap-3">
-                <a href="{{ route('user.produk.index') }}" class="btn-secondary flex-1 justify-center">
-                    <i class="ph ph-arrow-left"></i>
+            <div class="flex flex-col sm:flex-row items-center gap-4 pt-4 border-t border-gray-100">
+                <a href="{{ route('user.produk.index') }}" class="btn-secondary w-full sm:w-auto flex-1 justify-center group">
+                    <i class="ph ph-arrow-left transition-transform group-hover:-translate-x-1"></i>
                     Lanjut Belanja
                 </a>
-                <form action="{{ route('user.cart.clear') }}" method="POST" class="flex-1" onsubmit="return confirm('Kosongkan keranjang?')">
+                <form action="{{ route('user.cart.clear') }}" method="POST" class="w-full sm:w-auto flex-1" onsubmit="return confirm('Kosongkan keranjang belanja Anda?')">
                     @csrf
                     @method('DELETE')
-                    <button type="submit" class="btn-danger w-full">
+                    <button type="submit" class="btn btn-danger w-full shadow-sm hover:shadow-md transition-all active:scale-[0.98]">
                         <i class="ph ph-trash"></i>
                         Kosongkan Keranjang
                     </button>
@@ -255,9 +255,12 @@ $totalDiscount = collect($cart['items'] ?? [])->sum(function($item) {
                     </div>
                 </div>
                 <div class="p-6 pt-0">
-                    <a href="{{ route('user.checkout.index') }}" class="btn-primary w-full justify-center text-lg">
-                        Checkout Sekarang
-                        <i class="ph ph-arrow-right"></i>
+                    <a href="{{ route('user.checkout.index') }}" class="btn-primary w-full justify-center text-lg py-4 group relative overflow-hidden">
+                        <span class="relative z-10 flex items-center gap-2">
+                            Checkout Sekarang
+                            <i class="ph ph-arrow-right transition-transform group-hover:translate-x-1"></i>
+                        </span>
+                        <div class="absolute inset-0 bg-gradient-to-r from-primary-600 to-primary-500 opacity-0 group-hover:opacity-100 transition-opacity"></div>
                     </a>
                 </div>
             </div>
@@ -296,7 +299,7 @@ $totalDiscount = collect($cart['items'] ?? [])->sum(function($item) {
             </div>
             <h3 class="text-xl font-bold text-gray-900 mb-2">Keranjang Belanja Kosong</h3>
             <p class="text-gray-500 mb-6">Anda belum menambahkan produk apapun ke keranjang.</p>
-            <a href="{{ route('user.produk.index') }}" class="btn-primary">
+            <a href="{{ route('user.produk.index') }}" class="btn-primary px-8">
                 <i class="ph ph-magnifying-glass"></i>
                 Jelajahi Produk
             </a>

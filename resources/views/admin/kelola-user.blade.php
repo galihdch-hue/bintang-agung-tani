@@ -151,8 +151,8 @@
 
             <!-- Pagination -->
             @if ($users->hasPages())
-                <div class="bg-gradient-to-r from-primary-50/30 to-primary-50/10 border-t border-primary-100 p-5">
-                    {{ $users->links() }}
+                <div class="bg-gradient-to-r from-primary-50/30 to-primary-50/10 border-t border-primary-100 p-5 flex w-full">
+                    {{ $users->links('vendor.pagination.custom') }}
                 </div>
             @endif
 

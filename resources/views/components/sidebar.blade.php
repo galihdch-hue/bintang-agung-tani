@@ -60,14 +60,14 @@ $sidebarCategories = \App\Models\Category::where('is_active', true)
     {{-- Navigation --}}
     <nav class="flex-1 overflow-y-auto p-3 space-y-1">
         <a href="/user/dashboard" 
-           class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors {{ request()->is('user/dashboard*') ? 'bg-emerald-50 text-emerald-700' : 'text-gray-700 hover:bg-gray-50' }}">
-            <i class="ph ph-squares-four text-lg {{ request()->is('user/dashboard*') ? 'text-emerald-600' : 'text-gray-400' }}"></i>
+           class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors {{ request()->is('user/dashboard*') ? 'bg-primary-50 text-primary-700' : 'text-gray-700 hover:bg-gray-50' }}">
+            <i class="ph ph-squares-four text-lg {{ request()->is('user/dashboard*') ? 'text-primary-600' : 'text-gray-400' }}"></i>
             Dashboard
         </a>
         
         <a href="/user/produk" 
-           class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors {{ request()->is('user/produk') ? 'bg-emerald-50 text-emerald-700' : 'text-gray-700 hover:bg-gray-50' }}">
-            <i class="ph ph-storefront text-lg {{ request()->is('user/produk') ? 'text-emerald-600' : 'text-gray-400' }}"></i>
+           class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors {{ request()->is('user/produk') ? 'bg-primary-50 text-primary-700' : 'text-gray-700 hover:bg-gray-50' }}">
+            <i class="ph ph-storefront text-lg {{ request()->is('user/produk') ? 'text-primary-600' : 'text-gray-400' }}"></i>
             Semua Produk
         </a>
         
@@ -79,8 +79,8 @@ $sidebarCategories = \App\Models\Category::where('is_active', true)
         
         @foreach($sidebarCategories as $category)
         <a href="/user/produk?kategori={{ $category->slug }}" 
-           class="flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-colors {{ request('kategori') == $category->slug ? 'bg-emerald-50 text-emerald-700 font-medium' : 'text-gray-600 hover:bg-gray-50' }}">
-            <i class="ph {{ $category->icon ?? 'ph-package' }} text-lg {{ request('kategori') == $category->slug ? 'text-emerald-600' : 'text-gray-400' }}"></i>
+           class="flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-colors {{ request('kategori') == $category->slug ? 'bg-primary-50 text-primary-700 font-medium' : 'text-gray-600 hover:bg-gray-50' }}">
+            <i class="ph {{ $category->icon ?? 'ph-package' }} text-lg {{ request('kategori') == $category->slug ? 'text-primary-600' : 'text-gray-400' }}"></i>
             <span class="truncate">{{ $category->name }}</span>
         </a>
         @endforeach
@@ -91,17 +91,17 @@ $sidebarCategories = \App\Models\Category::where('is_active', true)
         </div>
         
         <a href="/user/keranjang" 
-           class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors {{ request()->is('user/keranjang*') ? 'bg-emerald-50 text-emerald-700' : 'text-gray-700 hover:bg-gray-50' }}">
-            <i class="ph ph-shopping-cart text-lg {{ request()->is('user/keranjang*') ? 'text-emerald-600' : 'text-gray-400' }}"></i>
+           class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors {{ request()->is('user/keranjang*') ? 'bg-primary-50 text-primary-700' : 'text-gray-700 hover:bg-gray-50' }}">
+            <i class="ph ph-shopping-cart text-lg {{ request()->is('user/keranjang*') ? 'text-primary-600' : 'text-gray-400' }}"></i>
             Keranjang
             @if($cartCount > 0)
-                <span class="ml-auto bg-emerald-600 text-white text-xs font-bold px-2 py-0.5 rounded-full">{{ $cartCount > 99 ? '99+' : $cartCount }}</span>
+                <span class="ml-auto bg-primary-600 text-white text-xs font-bold px-2 py-0.5 rounded-full">{{ $cartCount > 99 ? '99+' : $cartCount }}</span>
             @endif
         </a>
         
         <a href="/user/riwayat" 
-           class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors {{ request()->is('user/riwayat*') ? 'bg-emerald-50 text-emerald-700' : 'text-gray-700 hover:bg-gray-50' }}">
-            <i class="ph ph-receipt text-lg {{ request()->is('user/riwayat*') ? 'text-emerald-600' : 'text-gray-400' }}"></i>
+           class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors {{ request()->is('user/riwayat*') ? 'bg-primary-50 text-primary-700' : 'text-gray-700 hover:bg-gray-50' }}">
+            <i class="ph ph-receipt text-lg {{ request()->is('user/riwayat*') ? 'text-primary-600' : 'text-gray-400' }}"></i>
             Riwayat Pesanan
         </a>
     </nav>
@@ -109,8 +109,8 @@ $sidebarCategories = \App\Models\Category::where('is_active', true)
     {{-- Bottom Actions --}}
     <div class="p-3 border-t border-gray-100">
         <a href="/user/bantuan" 
-           class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-gray-700 hover:bg-gray-50 transition-colors {{ request()->is('user/bantuan*') ? 'bg-emerald-50 text-emerald-700' : '' }}">
-            <i class="ph ph-question text-lg {{ request()->is('user/bantuan*') ? 'text-emerald-600' : 'text-gray-400' }}"></i>
+           class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-gray-700 hover:bg-gray-50 transition-colors {{ request()->is('user/bantuan*') ? 'bg-primary-50 text-primary-700' : '' }}">
+            <i class="ph ph-question text-lg {{ request()->is('user/bantuan*') ? 'text-primary-600' : 'text-gray-400' }}"></i>
             Bantuan
         </a>
         <form action="/logout" method="POST">
