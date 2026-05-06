@@ -118,13 +118,20 @@
                                 <a href="{{ route('admin.produk.edit', $product) }}" class="icon-button text-gray-500 hover:text-amber-600 hover:bg-amber-50 bg-white border border-gray-200 rounded-lg shadow-sm transition-colors" title="Edit">
                                     <i class="ph ph-pencil-simple ph-bold w-4 h-4"></i>
                                 </a>
-                                <form action="{{ route('admin.produk.destroy', $product) }}" method="POST" class="inline" onsubmit="return confirm('Apakah Anda yakin ingin menghapus produk ini?');">
+                                <form id="delete-product-{{ $product->id }}" action="{{ route('admin.produk.destroy', $product) }}" method="POST" class="hidden">
                                     @csrf
                                     @method('DELETE')
-                                    <button type="submit" class="icon-button text-gray-500 hover:text-red-600 hover:bg-red-50 bg-white border border-gray-200 rounded-lg shadow-sm transition-colors" title="Hapus">
-                                        <i class="ph ph-trash ph-bold w-4 h-4"></i>
-                                    </button>
                                 </form>
+                                <button type="button" 
+                                        @click="$dispatch('confirm-action', { 
+                                            title: 'Hapus Produk?', 
+                                            message: 'Apakah Anda yakin ingin menghapus produk <strong>{{ $product->name }}</strong>? Tindakan ini tidak dapat dibatalkan.', 
+                                            confirmText: 'Ya, Hapus', 
+                                            action: () => document.getElementById('delete-product-{{ $product->id }}').submit() 
+                                        })"
+                                        class="icon-button text-gray-500 hover:text-red-600 hover:bg-red-50 bg-white border border-gray-200 rounded-lg shadow-sm transition-colors" title="Hapus">
+                                    <i class="ph ph-trash ph-bold w-4 h-4"></i>
+                                </button>
                             </div>
                         </td>
                     </tr>

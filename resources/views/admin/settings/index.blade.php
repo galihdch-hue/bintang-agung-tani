@@ -21,13 +21,20 @@
         </div>
         
         <div class="flex items-center gap-3 shrink-0">
-            <form action="{{ route('admin.settings.reset') }}" method="POST" class="inline">
+            <form id="reset-ui-form" action="{{ route('admin.settings.reset') }}" method="POST" class="hidden">
                 @csrf
-                <button type="submit" class="bg-white border border-gray-200 px-4 py-2.5 rounded-xl text-gray-700 hover:bg-gray-50 hover:text-red-600 transition-colors shadow-sm flex items-center gap-2 font-medium focus:outline-none h-10" onclick="return confirm('Reset semua pengaturan UI ke default? Pengaturan toko tidak akan direset.')">
-                    <i class="ph ph-arrow-counter-clockwise w-5 h-5 text-gray-500"></i>
-                    <span class="hidden sm:inline">Reset UI</span>
-                </button>
             </form>
+            <button type="button" 
+                    @click="$dispatch('confirm-action', { 
+                        title: 'Reset Tampilan UI?', 
+                        message: 'Apakah Anda yakin ingin mereset semua pengaturan tampilan UI ke default? <strong>Catatan:</strong> Pengaturan identitas toko tidak akan direset.', 
+                        confirmText: 'Ya, Reset UI', 
+                        action: () => document.getElementById('reset-ui-form').submit() 
+                    })"
+                    class="bg-white border border-gray-200 px-4 py-2.5 rounded-xl text-gray-700 hover:bg-gray-50 hover:text-red-600 transition-colors shadow-sm flex items-center gap-2 font-medium focus:outline-none h-10">
+                <i class="ph ph-arrow-counter-clockwise w-5 h-5 text-gray-500"></i>
+                <span class="hidden sm:inline">Reset UI</span>
+            </button>
         </div>
     </div>
 

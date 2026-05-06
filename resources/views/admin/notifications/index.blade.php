@@ -69,16 +69,21 @@
                                             </button>
                                         </form>
                                     @endif
-                                    <form action="{{ route('admin.notifications.destroy', $notification->id) }}" method="POST">
+                                    <form id="delete-notif-{{ $notification->id }}" action="{{ route('admin.notifications.destroy', $notification->id) }}" method="POST" class="hidden">
                                         @csrf
                                         @method('DELETE')
-                                        <button type="submit"
-                                            class="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
-                                            title="Hapus"
-                                            onclick="return confirm('Yakin ingin menghapus notifikasi ini?')">
-                                            <i class="ph ph-trash w-4 h-4"></i>
-                                        </button>
                                     </form>
+                                    <button type="button" 
+                                        @click="$dispatch('confirm-action', { 
+                                            title: 'Hapus Notifikasi?', 
+                                            message: 'Apakah Anda yakin ingin menghapus notifikasi ini?', 
+                                            confirmText: 'Ya, Hapus', 
+                                            action: () => document.getElementById('delete-notif-{{ $notification->id }}').submit() 
+                                        })"
+                                        class="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                                        title="Hapus">
+                                        <i class="ph ph-trash w-4 h-4"></i>
+                                    </button>
                                 </div>
                             </div>
                         </div>

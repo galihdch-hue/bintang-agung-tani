@@ -78,16 +78,21 @@
                                             </button>
                                         </form>
                                     @endif
-                                    <form action="{{ route('admin.messages.destroy', $message->id) }}" method="POST">
+                                    <form id="delete-message-{{ $message->id }}" action="{{ route('admin.messages.destroy', $message->id) }}" method="POST" class="hidden">
                                         @csrf
                                         @method('DELETE')
-                                        <button type="submit"
-                                            class="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
-                                            title="Hapus"
-                                            onclick="return confirm('Yakin ingin menghapus pesan ini?')">
-                                            <i class="ph ph-trash w-4 h-4"></i>
-                                        </button>
                                     </form>
+                                    <button type="button" 
+                                        @click="$dispatch('confirm-action', { 
+                                            title: 'Hapus Pesan?', 
+                                            message: 'Apakah Anda yakin ingin menghapus pesan dari <strong>{{ $message->name }}</strong>?', 
+                                            confirmText: 'Ya, Hapus', 
+                                            action: () => document.getElementById('delete-message-{{ $message->id }}').submit() 
+                                        })"
+                                        class="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                                        title="Hapus">
+                                        <i class="ph ph-trash w-4 h-4"></i>
+                                    </button>
                                 </div>
                             </div>
                         </div>

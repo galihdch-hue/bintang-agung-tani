@@ -104,13 +104,20 @@
                                 <a href="{{ url('/admin/kategori/' . $category->id . '/edit') }}" class="px-3 py-1.5 text-xs font-semibold text-blue-700 bg-blue-50 border border-blue-100 border-b-2 hover:bg-blue-100 rounded-lg transition-colors flex items-center gap-1.5 focus:ring-2 focus:ring-blue-500/20 active:border-b active:translate-y-px">
                                     <i class="ph ph-pencil-simple ph-bold w-3.5 h-3.5"></i> Edit
                                 </a>
-                                <form action="{{ url('/admin/kategori/' . $category->id) }}" method="POST" class="inline" onsubmit="return confirm('Yakin ingin menghapus kategori ini?')">
+                                <form id="delete-form-{{ $category->id }}" action="{{ url('/admin/kategori/' . $category->id) }}" method="POST" class="hidden">
                                     @csrf
                                     @method('DELETE')
-                                    <button type="submit" class="px-3 py-1.5 text-xs font-semibold text-red-700 bg-red-50 border border-red-100 border-b-2 hover:bg-red-100 rounded-lg transition-colors flex items-center gap-1.5 focus:ring-2 focus:ring-red-500/20 active:border-b active:translate-y-px">
-                                        <i class="ph ph-trash ph-bold w-3.5 h-3.5"></i> Hapus
-                                    </button>
                                 </form>
+                                <button type="button" 
+                                        @click="$dispatch('confirm-action', { 
+                                            title: 'Hapus Kategori?', 
+                                            message: 'Apakah Anda yakin ingin menghapus kategori <strong>{{ $category->name }}</strong>? Produk yang terhubung ke kategori ini akan kehilangan referensi kategorinya.', 
+                                            confirmText: 'Ya, Hapus', 
+                                            action: () => document.getElementById('delete-form-{{ $category->id }}').submit() 
+                                        })"
+                                        class="px-3 py-1.5 text-xs font-semibold text-red-700 bg-red-50 border border-red-100 border-b-2 hover:bg-red-100 rounded-lg transition-colors flex items-center gap-1.5 focus:ring-2 focus:ring-red-500/20 active:border-b active:translate-y-px">
+                                    <i class="ph ph-trash ph-bold w-3.5 h-3.5"></i> Hapus
+                                </button>
                             </div>
                         </td>
                     </tr>
@@ -160,7 +167,7 @@
                     
                     <div>
                         <label class="form-label block mb-1.5">Ikon Kategori</label>
-                        <input type="text" name="icon" placeholder="Contoh: ph-plant" class="form-input w-full">
+                        <input type="text" name="icon" placeholder="Contoh: ph-tag" class="form-input w-full">
                     </div>
                     
                     <div>
@@ -174,74 +181,6 @@
                     <button type="submit" class="btn-primary shadow-md text-sm">Simpan Kategori</button>
                 </div>
             </form>
-        </div>
-    </div>
-
-    <!-- Edit Category Modal -->
-    <div x-show="showEditModal" x-cloak style="display: none;" class="fixed inset-0 z-50 flex items-center justify-center bg-gray-900/60"
-         x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100"
-         x-transition:leave="transition ease-in duration-200" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0">
-        <div @click.away="showEditModal = false" class="bg-white rounded-2xl shadow-xl w-full max-w-lg mx-4 overflow-hidden"
-             x-transition:enter="transition ease-out duration-300 delay-75" x-transition:enter-start="opacity-0 translate-y-8 scale-95" x-transition:enter-end="opacity-100 translate-y-0 scale-100"
-             x-transition:leave="transition ease-in duration-200" x-transition:leave-start="opacity-100 translate-y-0 scale-100" x-transition:leave-end="opacity-0 translate-y-8 scale-95">
-            
-            <div class="px-6 py-5 border-b border-gray-100 flex items-center justify-between bg-white">
-                <h3 class="text-xl font-bold text-gray-900">Edit Kategori</h3>
-                <button @click="showEditModal = false" class="text-gray-400 hover:text-gray-900 bg-gray-50 hover:bg-gray-100 rounded-lg p-1.5 transition-colors">
-                    <i class="ph ph-x ph-bold w-5 h-5"></i>
-                </button>
-            </div>
-            
-            <div class="p-6 space-y-5">
-                <div>
-                    <label class="form-label block mb-1.5">Nama Kategori <span class="text-red-500">*</span></label>
-                    <input type="text" :value="editTarget" class="form-input w-full">
-                </div>
-                
-                <div>
-                    <label class="form-label block mb-1.5">Ikon Saat Ini</label>
-                    <div class="flex items-center gap-4">
-                        <div class="w-14 h-14 rounded-xl bg-primary-50 border border-primary-200 text-primary-600 flex items-center justify-center">
-                            <i class="ph ph-plant ph-duotone w-6 h-6"></i>
-                        </div>
-                        <button type="button" class="btn-secondary text-sm h-10 shadow-sm">Ubah Ikon</button>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="px-6 py-4 border-t border-gray-100 bg-gray-50 flex justify-end gap-3">
-                <button @click="showEditModal = false" class="btn-secondary text-sm">Batal</button>
-                <button class="btn-primary shadow-md text-sm">Simpan Perubahan</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Delete Confirmation Modal -->
-    <div x-show="showDeleteModal" x-cloak style="display: none;" class="fixed inset-0 z-50 flex items-center justify-center bg-gray-900/60"
-         x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100"
-         x-transition:leave="transition ease-in duration-200" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0">
-        <div @click.away="showDeleteModal = false" class="bg-white rounded-3xl shadow-2xl w-full max-w-[400px] p-8 text-center mx-4"
-             x-transition:enter="transition ease-out duration-300 delay-75" x-transition:enter-start="opacity-0 translate-y-8 scale-95" x-transition:enter-end="opacity-100 translate-y-0 scale-100"
-             x-transition:leave="transition ease-in duration-200" x-transition:leave-start="opacity-100 translate-y-0 scale-100" x-transition:leave-end="opacity-0 translate-y-8 scale-95">
-            
-            <div class="mx-auto flex items-center justify-center w-20 h-20 rounded-full bg-red-50 mb-5 relative">
-                <div class="absolute inset-0 rounded-full bg-red-100 animate-ping opacity-20"></div>
-                <i class="ph ph-trash ph-duotone w-10 h-10 text-red-500"></i>
-            </div>
-            
-            <h3 class="text-2xl font-bold text-gray-900 mb-2">Hapus Kategori?</h3>
-            <p class="text-gray-500 text-sm mb-8 leading-relaxed">
-                Anda akan menghapus kategori <strong x-text="deleteTarget" class="text-gray-900"></strong>. Produk yang terhubung ke kategori ini mungkin kehilangan referensinya.
-            </p>
-            
-            <div class="flex flex-col sm:flex-row justify-center gap-3">
-                <button @click="showDeleteModal = false" class="w-full sm:w-1/2 btn-secondary justify-center shadow-sm">
-                    Batal
-                </button>
-                <button type="button" class="w-full sm:w-1/2 bg-red-600 hover:bg-red-700 text-white font-bold py-2.5 px-4 rounded-xl transition-all shadow-lg hover:shadow-xl hover:-translate-y-0.5 active:translate-y-px">
-                    Ya, Hapus
-                </button>
-            </div>
         </div>
     </div>
 

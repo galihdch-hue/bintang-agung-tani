@@ -221,7 +221,14 @@
                     <div class="relative w-full aspect-square rounded-2xl bg-gray-50 border border-gray-200 overflow-hidden group">
                         @if($product->getFirstImage())
                             <img loading="lazy" src="{{ $product->getFirstImage() }}" alt="{{ $product->name }}" class="w-full h-full object-cover mix-blend-multiply transition-transform group-hover:scale-105">
-                            <button type="button" class="absolute top-2 right-2 bg-white text-red-600 p-2 rounded-lg shadow-sm hover:bg-red-50 hover:text-red-700 transition-colors opacity-0 group-hover:opacity-100 focus:opacity-100" title="Hapus Gambar" onclick="submitDeleteImageForm()">
+                            <button type="button" 
+                                    @click="$dispatch('confirm-action', { 
+                                        title: 'Hapus Gambar Produk?', 
+                                        message: 'Apakah Anda yakin ingin menghapus gambar produk ini?', 
+                                        confirmText: 'Ya, Hapus Gambar', 
+                                        action: () => document.getElementById('delete-image-form-{{ $product->id }}').submit() 
+                                    })"
+                                    class="absolute top-2 right-2 bg-white text-red-600 p-2 rounded-lg shadow-sm hover:bg-red-50 hover:text-red-700 transition-colors opacity-0 group-hover:opacity-100 focus:opacity-100" title="Hapus Gambar">
                                 <i class="ph ph-trash ph-bold w-4 h-4"></i>
                             </button>
                         @else
@@ -281,7 +288,14 @@
 
                 <!-- Warning untuk Delete -->
                 <div class="mt-6 border-t border-red-500/20 pt-4 text-center">
-                    <button type="button" onclick="submitDeleteProductForm()" class="text-xs font-bold text-red-600 hover:text-red-700 hover:underline">
+                    <button type="button" 
+                            @click="$dispatch('confirm-action', { 
+                                title: 'Hapus Produk Permanen?', 
+                                message: 'Apakah Anda yakin ingin menghapus produk <strong>{{ $product->name }}</strong> secara permanen? Tindakan ini tidak dapat dibatalkan.', 
+                                confirmText: 'Ya, Hapus Permanen', 
+                                action: () => document.getElementById('delete-product-form-{{ $product->id }}').submit() 
+                            })"
+                            class="text-xs font-bold text-red-600 hover:text-red-700 hover:underline">
                         Hapus Permanen Produk Ini
                     </button>
                 </div>
@@ -413,22 +427,6 @@
         });
     }
 
-    function submitDeleteImageForm() {
-        if (confirm('Apakah Anda yakin ingin menghapus gambar produk ini?')) {
-            const deleteForm = document.getElementById('delete-image-form-{{ $product->id }}');
-            if (deleteForm) {
-                deleteForm.submit();
-            }
-        }
-    }
 
-    function submitDeleteProductForm() {
-        if (confirm('Apakah Anda yakin ingin menghapus produk ini secara permanen?')) {
-            const deleteForm = document.getElementById('delete-product-form-{{ $product->id }}');
-            if (deleteForm) {
-                deleteForm.submit();
-            }
-        }
-    }
     </script>
 @endsection

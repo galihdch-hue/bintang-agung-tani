@@ -24,17 +24,19 @@
              :class="{
                  'toast-success': toast.type === 'success',
                  'toast-error': toast.type === 'error',
-                 'toast-warning': toast.type === 'warning'
+                 'toast-warning': toast.type === 'warning',
+                 'toast-info': toast.type === 'info'
              }"
              class="toast">
             <i :class="{
                 'ph-fill ph-check-circle': toast.type === 'success',
                 'ph-fill ph-x-circle': toast.type === 'error',
-                'ph-fill ph-warning': toast.type === 'warning'
-            }" class="ph text-xl"></i>
-            <span x-text="toast.message" class="text-sm font-medium"></span>
-            <button @click="remove(toast.id)" class="ml-auto hover:opacity-75 transition-opacity">
-                <i class="ph ph-x"></i>
+                'ph-fill ph-warning': toast.type === 'warning',
+                'ph-fill ph-info': toast.type === 'info'
+            }" class="ph text-xl shrink-0"></i>
+            <span x-text="toast.message" class="text-sm font-semibold text-gray-800"></span>
+            <button @click="remove(toast.id)" class="ml-auto p-1.5 hover:bg-black/5 rounded-lg transition-colors shrink-0">
+                <i class="ph ph-x text-gray-400 hover:text-gray-600"></i>
             </button>
         </div>
     </template>
@@ -72,6 +74,21 @@
                 window.dispatchEvent(new CustomEvent('toast', { 
                     detail: { message: "{{ addslashes(session('warning')) }}", type: 'warning' }
                 }));
+            }, 100);
+        });
+    </script>
+@endif
+
+{{-- Validation Errors --}}
+@if($errors->any())
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            setTimeout(() => {
+                @foreach($errors->all() as $error)
+                    window.dispatchEvent(new CustomEvent('toast', { 
+                        detail: { message: "{{ addslashes($error) }}", type: 'error' }
+                    }));
+                @endforeach
             }, 100);
         });
     </script>

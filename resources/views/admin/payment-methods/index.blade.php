@@ -139,14 +139,21 @@
                                         <span class="hidden sm:inline">{{ $method->is_active ? 'Matikan' : 'Aktifkan' }}</span>
                                     </button>
                                 </form>
-                                <form action="{{ route('admin.payment-methods.destroy', $method) }}" method="POST" class="inline" onsubmit="return confirmDelete(event, '{{ $method->name }}')">
+                                <form id="delete-payment-method-{{ $method->id }}" action="{{ route('admin.payment-methods.destroy', $method) }}" method="POST" class="hidden">
                                     @csrf
                                     @method('DELETE')
-                                    <button type="submit" class="text-red-600 hover:text-red-800 hover:bg-red-50 px-2 py-1.5 rounded-lg transition-colors inline-flex items-center gap-1" aria-label="Hapus {{ $method->name }}">
-                                        <i class="ph ph-trash w-4 h-4"></i>
-                                        <span class="hidden sm:inline">Hapus</span>
-                                    </button>
                                 </form>
+                                <button type="button" 
+                                    @click="$dispatch('confirm-action', { 
+                                        title: 'Hapus Metode Pembayaran?', 
+                                        message: 'Apakah Anda yakin ingin menghapus metode pembayaran <strong>{{ $method->name }}</strong>?', 
+                                        confirmText: 'Ya, Hapus', 
+                                        action: () => document.getElementById('delete-payment-method-{{ $method->id }}').submit() 
+                                    })"
+                                    class="text-red-600 hover:text-red-800 hover:bg-red-50 px-2 py-1.5 rounded-lg transition-colors inline-flex items-center gap-1" aria-label="Hapus {{ $method->name }}">
+                                    <i class="ph ph-trash w-4 h-4"></i>
+                                    <span class="hidden sm:inline">Hapus</span>
+                                </button>
                             </div>
                         </td>
                     </tr>
@@ -172,15 +179,4 @@
         </div>
     </div>
 </div>
-@endsection
-
-@section('scripts')
-<script>
-function confirmDelete(event, methodName) {
-    event.preventDefault();
-    if (confirm('Apakah Anda yakin ingin menghapus metode pembayaran "' + methodName + '"?')) {
-        event.target.closest('form').submit();
-    }
-}
-</script>
 @endsection

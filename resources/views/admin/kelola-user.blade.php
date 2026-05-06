@@ -115,16 +115,21 @@
                                             title="Edit">
                                             <i class="ph ph-pencil-simple ph-bold w-4 h-4"></i>
                                         </a>
-                                        <form action="/admin/users/{{ $user->id }}" method="POST" class="inline"
-                                            onsubmit="return confirm('Yakin ingin menghapus user ini?')">
+                                        <form id="delete-user-{{ $user->id }}" action="/admin/users/{{ $user->id }}" method="POST" class="hidden">
                                             @csrf
                                             @method('DELETE')
-                                            <button type="submit"
-                                                class="icon-button text-gray-500 hover:text-red-600 hover:bg-red-50 bg-white border border-gray-200 rounded-lg shadow-sm transition-colors"
-                                                title="Hapus">
-                                                <i class="ph ph-trash ph-bold w-4 h-4"></i>
-                                            </button>
                                         </form>
+                                        <button type="button" 
+                                            @click="$dispatch('confirm-action', { 
+                                                title: 'Hapus User?', 
+                                                message: 'Apakah Anda yakin ingin menghapus user <strong>{{ $user->name }}</strong>? Tindakan ini tidak dapat dibatalkan.', 
+                                                confirmText: 'Ya, Hapus', 
+                                                action: () => document.getElementById('delete-user-{{ $user->id }}').submit() 
+                                            })"
+                                            class="icon-button text-gray-500 hover:text-red-600 hover:bg-red-50 bg-white border border-gray-200 rounded-lg shadow-sm transition-colors"
+                                            title="Hapus">
+                                            <i class="ph ph-trash ph-bold w-4 h-4"></i>
+                                        </button>
                                     </div>
                                 </td>
                             </tr>

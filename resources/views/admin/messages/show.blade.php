@@ -50,16 +50,21 @@
                         Balas via Email
                     </a>
 
-                    <form action="{{ route('admin.messages.destroy', $message->id) }}" method="POST" class="inline">
+                    <form id="delete-message-form" action="{{ route('admin.messages.destroy', $message->id) }}" method="POST" class="hidden">
                         @csrf
                         @method('DELETE')
-                        <button type="submit"
-                                class="inline-flex items-center gap-2 px-4 py-2 bg-white border border-gray-200 text-red-600 rounded-xl hover:bg-red-50 transition-colors text-sm font-medium"
-                                onclick="return confirm('Yakin ingin menghapus pesan ini?')">
-                            <i class="ph ph-trash w-4 h-4"></i>
-                            Hapus
-                        </button>
                     </form>
+                    <button type="button" 
+                            @click="$dispatch('confirm-action', { 
+                                title: 'Hapus Pesan?', 
+                                message: 'Apakah Anda yakin ingin menghapus pesan ini?', 
+                                confirmText: 'Ya, Hapus', 
+                                action: () => document.getElementById('delete-message-form').submit() 
+                            })"
+                            class="inline-flex items-center gap-2 px-4 py-2 bg-white border border-gray-200 text-red-600 rounded-xl hover:bg-red-50 transition-colors text-sm font-medium">
+                        <i class="ph ph-trash w-4 h-4"></i>
+                        Hapus
+                    </button>
                 </div>
             </div>
         </div>

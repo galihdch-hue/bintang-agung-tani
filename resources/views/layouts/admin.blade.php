@@ -47,6 +47,8 @@ use App\Models\Setting;
         </div>
     </div>
     
+    @include('components.toast')
+    @include('components.confirm-modal')
     @yield('scripts')
 </body>
 </html>

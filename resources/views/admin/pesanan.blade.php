@@ -147,14 +147,23 @@
                                         <i class="ph ph-receipt w-3.5 h-3.5"></i> Verifikasi
                                     </a>
                                 @elseif($order->status === 'processing')
-                                    <form action="{{ route('admin.orders.update-status', $order) }}" method="POST" class="inline" onsubmit="return confirm('Tandai pesanan sebagai selesai?')">
+                                @elseif($order->status === 'processing')
+                                    <form id="complete-order-{{ $order->id }}" action="{{ route('admin.orders.update-status', $order) }}" method="POST" class="hidden">
                                         @csrf
                                         @method('PATCH')
                                         <input type="hidden" name="status" value="completed">
-                                        <button type="submit" class="btn-primary h-8 px-2 text-xs border-green-600 bg-green-600 hover:bg-green-700 hover:border-green-700 shadow-sm focus:ring-green-500/30 flex items-center gap-1 whitespace-nowrap">
-                                            <i class="ph ph-check-circle w-3.5 h-3.5"></i> Selesai
-                                        </button>
                                     </form>
+                                    <button type="button" 
+                                            @click="$dispatch('confirm-action', { 
+                                                title: 'Selesaikan Pesanan?', 
+                                                message: 'Apakah Anda yakin ingin menandai pesanan <strong>{{ $order->order_number }}</strong> sebagai selesai?', 
+                                                confirmText: 'Ya, Selesai', 
+                                                isDestructive: false,
+                                                action: () => document.getElementById('complete-order-{{ $order->id }}').submit() 
+                                            })"
+                                            class="btn-primary h-8 px-2 text-xs border-green-600 bg-green-600 hover:bg-green-700 hover:border-green-700 shadow-sm focus:ring-green-500/30 flex items-center gap-1 whitespace-nowrap">
+                                        <i class="ph ph-check-circle w-3.5 h-3.5"></i> Selesai
+                                    </button>
                                 @elseif($order->status === 'completed')
                                     <button class="btn-secondary h-8 px-2 text-xs bg-gray-50 text-gray-400 border-transparent cursor-default pointer-events-none flex items-center gap-1 whitespace-nowrap">
                                         <i class="ph ph-check-circle ph-fill w-3.5 h-3.5 text-green-500"></i> Berhasil
@@ -192,13 +201,20 @@
                                         
                                         <!-- Cancel Order -->
                                         @if($order->canBeCancelled())
-                                            <form action="{{ route('admin.orders.cancel', $order) }}" method="POST" class="block" onsubmit="return confirm('Yakin ingin membatalkan pesanan ini?')">
+                                            <form id="cancel-order-{{ $order->id }}" action="{{ route('admin.orders.cancel', $order) }}" method="POST" class="hidden">
                                                 @csrf
-                                                <button type="submit" class="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 transition-colors text-left">
-                                                    <i class="ph ph-x-circle w-4 h-4"></i>
-                                                    <span>Batalkan Pesanan</span>
-                                                </button>
                                             </form>
+                                            <button type="button" 
+                                                    @click="$dispatch('confirm-action', { 
+                                                        title: 'Batalkan Pesanan?', 
+                                                        message: 'Apakah Anda yakin ingin membatalkan pesanan <strong>{{ $order->order_number }}</strong>?', 
+                                                        confirmText: 'Ya, Batalkan', 
+                                                        action: () => document.getElementById('cancel-order-{{ $order->id }}').submit() 
+                                                    })"
+                                                    class="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 transition-colors text-left">
+                                                <i class="ph ph-x-circle w-4 h-4"></i>
+                                                <span>Batalkan Pesanan</span>
+                                            </button>
                                         @endif
                                     </div>
                                 </div>
