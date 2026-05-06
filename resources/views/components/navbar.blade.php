@@ -138,6 +138,19 @@
             x-transition:leave="transition ease-in duration-150" x-transition:leave-start="opacity-100 translate-y-0"
             x-transition:leave-end="opacity-0 -translate-y-2" class="md:hidden py-3 border-t border-white/20"
             style="display: none;" role="navigation" aria-label="Mobile menu">
+            
+            {{-- Mobile Search --}}
+            <div class="px-3 mb-4">
+                <div class="relative group">
+                    <input type="text" placeholder="Cari produk..."
+                        class="w-full bg-white/10 border border-white/20 text-white placeholder-white/60 text-sm rounded-xl pl-10 pr-4 py-2.5 focus:outline-none focus:bg-white/20 focus:border-white/30 transition-all duration-200"
+                        onkeyup="if(event.key==='Enter') window.location.href='/user/produk?search='+this.value">
+                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                        <i class="ph ph-magnifying-glass w-4 h-4 text-white/60"></i>
+                    </div>
+                </div>
+            </div>
+
             <div class="flex flex-col gap-1">
                 <a href="/user/dashboard"
                     class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-white/90 hover:bg-white/10 transition-colors {{ request()->is('user/dashboard') ? 'bg-white/20 text-white font-medium' : '' }}">

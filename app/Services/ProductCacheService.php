@@ -64,6 +64,8 @@ final class ProductCacheService
         Cache::forget("product:{$product->slug}");
         Cache::forget("related_products:{$product->category_id}:{$product->id}");
         Cache::forget(self::FEATURED_PRODUCTS_KEY);
+        Cache::forget(self::ACTIVE_CATEGORIES_KEY);
+        Cache::forget(self::CATEGORY_PRODUCT_COUNTS_KEY);
     }
 
     /**

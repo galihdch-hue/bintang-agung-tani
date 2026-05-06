@@ -9,7 +9,31 @@ $totalProducts = $products->total() ?? 0;
 @section('title', 'Produk')
 
 @section('content')
-<div class="space-y-6" x-data="{ filterOpen: false }">
+<div class="space-y-6" x-data="{ 
+    filterOpen: false,
+    loading: false,
+    search: '{{ request('search') }}',
+    category: '{{ request('kategori') }}',
+    minPrice: '{{ request('min_price', '') }}',
+    maxPrice: '{{ request('max_price', '') }}',
+    sort: '{{ request('sort', 'terbaru') }}',
+    
+    applyFilters() {
+        this.loading = true;
+        let params = new URLSearchParams();
+        if (this.search) params.set('search', this.search);
+        if (this.category) params.set('kategori', this.category);
+        if (this.minPrice) params.set('min_price', this.minPrice);
+        if (this.maxPrice) params.set('max_price', this.maxPrice);
+        if (this.sort) params.set('sort', this.sort);
+        
+        window.location.href = '{{ route('user.produk.index') }}?' + params.toString();
+    },
+
+    resetFilters() {
+        window.location.href = '{{ route('user.produk.index') }}';
+    }
+}">
     {{-- Header --}}
     <div class="flex flex-col md:flex-row md:items-end justify-between gap-4">
         <div>
@@ -44,7 +68,7 @@ $totalProducts = $products->total() ?? 0;
     </div>
     
     {{-- Search & Filter Bar --}}
-    <div class="card-featured p-4 flex items-center gap-3" x-data="{ loading: false }">
+    <div class="card-featured p-4 flex items-center gap-3">
         <div class="relative flex-1">
             <i x-show="!loading" x-cloak class="ph ph-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 text-lg"></i>
             <div x-show="loading" x-cloak class="absolute left-4 top-1/2 -translate-y-1/2">
@@ -54,8 +78,8 @@ $totalProducts = $products->total() ?? 0;
                    name="search"
                    placeholder="Cari produk pertanian, pupuk, pestisida..."
                    class="w-full pl-12 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-primary-500 focus:ring-4 focus:ring-primary-500/10 transition-all"
-                   value="{{ request('search') }}"
-                   x-on:keyup.enter="loading = true; window.location.href = '{{ route('user.produk.index') }}?search=' + $event.target.value">
+                   x-model="search"
+                   x-on:keyup.enter="applyFilters()">
         </div>
         <button @click="filterOpen = true"
                 class="lg:hidden icon-button bg-primary-50 border border-primary-200 rounded-xl text-primary-600 hover:bg-primary-100 transition-all duration-200 flex items-center gap-2 min-w-[auto] px-4">
@@ -79,27 +103,34 @@ $totalProducts = $products->total() ?? 0;
                         <h3 class="font-bold text-white text-sm uppercase tracking-wider">Kategori</h3>
                     </div>
                     <div class="p-3 space-y-1">
-                        <a href="{{ route('user.produk.index') }}" 
-                           class="flex items-center justify-between px-4 py-3 rounded-xl text-sm transition-all duration-200 {{ !$currentCategory ? 'bg-primary-50 text-primary-700 font-semibold shadow-sm' : 'text-gray-600 hover:bg-gray-50' }}">
+                        <button @click="category = ''; applyFilters()" 
+                           class="w-full flex items-center justify-between px-4 py-3 rounded-xl text-sm transition-all duration-200"
+                           :class="!category ? 'bg-primary-50 text-primary-700 font-semibold shadow-sm' : 'text-gray-600 hover:bg-gray-50'">
                             <div class="flex items-center gap-3">
-                                <div class="w-8 h-8 {{ !$currentCategory ? 'bg-primary-100' : 'bg-gray-100' }} rounded-lg flex items-center justify-center">
-                                    <i class="ph ph-apps {{ !$currentCategory ? 'text-primary-600' : 'text-gray-400' }}"></i>
+                                <div class="w-8 h-8 rounded-lg flex items-center justify-center"
+                                     :class="!category ? 'bg-primary-100' : 'bg-gray-100'">
+                                    <i class="ph ph-apps" :class="!category ? 'text-primary-600' : 'text-gray-400'"></i>
                                 </div>
                                 <span>Semua Kategori</span>
                             </div>
-                            <span class="text-xs {{ !$currentCategory ? 'bg-primary-100 text-primary-700' : 'bg-gray-100 text-gray-500' }} px-2.5 py-1 rounded-full font-semibold">{{ $totalProducts }}</span>
-                        </a>
+                            <span class="text-xs px-2.5 py-1 rounded-full font-semibold"
+                                  :class="!category ? 'bg-primary-100 text-primary-700' : 'bg-gray-100 text-gray-500'">{{ $totalProducts }}</span>
+                        </button>
                         @foreach($categories as $category)
-                        <a href="{{ route('user.produk.index', ['kategori' => $category->slug]) }}" 
-                           class="flex items-center justify-between px-4 py-3 rounded-xl text-sm transition-all duration-200 {{ $currentCategory == $category->slug ? 'bg-primary-50 text-primary-700 font-semibold shadow-sm' : 'text-gray-600 hover:bg-gray-50' }}">
+                        <button @click="category = '{{ $category->slug }}'; applyFilters()" 
+                           class="w-full flex items-center justify-between px-4 py-3 rounded-xl text-sm transition-all duration-200"
+                           :class="category == '{{ $category->slug }}' ? 'bg-primary-50 text-primary-700 font-semibold shadow-sm' : 'text-gray-600 hover:bg-gray-50'">
                             <div class="flex items-center gap-3">
-                                <div class="w-8 h-8 {{ $currentCategory == $category->slug ? 'bg-primary-100' : 'bg-gray-100' }} rounded-lg flex items-center justify-center">
-                                    <i class="ph {{ $category->icon ?? 'ph-package' }} {{ $currentCategory == $category->slug ? 'text-primary-600' : 'text-gray-400' }}"></i>
+                                <div class="w-8 h-8 rounded-lg flex items-center justify-center"
+                                     :class="category == '{{ $category->slug }}' ? 'bg-primary-100' : 'bg-gray-100'">
+                                    <i class="ph {{ $category->icon ?? 'ph-package' }}" 
+                                       :class="category == '{{ $category->slug }}' ? 'text-primary-600' : 'text-gray-400'"></i>
                                 </div>
                                 <span>{{ $category->name }}</span>
                             </div>
-                            <span class="text-xs {{ $currentCategory == $category->slug ? 'bg-primary-100 text-primary-700' : 'bg-gray-100 text-gray-500' }} px-2.5 py-1 rounded-full font-semibold">{{ $categoryCounts[$category->slug] ?? 0 }}</span>
-                        </a>
+                            <span class="text-xs px-2.5 py-1 rounded-full font-semibold"
+                                  :class="category == '{{ $category->slug }}' ? 'bg-primary-100 text-primary-700' : 'bg-gray-100 text-gray-500'">{{ $categoryCounts[$category->slug] ?? 0 }}</span>
+                        </button>
                         @endforeach
                     </div>
                 </div>
@@ -114,23 +145,34 @@ $totalProducts = $products->total() ?? 0;
                     </div>
                     <div class="space-y-4">
                         <div class="relative">
-                            <input type="range" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-primary-600" min="0" max="1000000" step="10000" value="500000">
+                            <input type="range" 
+                                   class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-primary-600" 
+                                   min="0" max="2000000" step="50000" 
+                                   x-model="maxPrice"
+                                   @input="maxPrice = $event.target.value">
                             <div class="flex justify-between text-xs text-gray-400 mt-2">
                                 <span>Rp 0</span>
-                                <span>Rp 1jt</span>
+                                <span>Rp 2jt+</span>
                             </div>
                         </div>
                         <div class="grid grid-cols-2 gap-3">
                             <div class="relative">
                                 <span class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm">Rp</span>
-                                <input type="number" placeholder="Min" class="w-full pl-9 pr-3 py-2.5 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 transition-all">
+                                <input type="number" 
+                                       placeholder="Min" 
+                                       x-model="minPrice"
+                                       class="w-full pl-9 pr-3 py-2.5 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 transition-all">
                             </div>
                             <div class="relative">
                                 <span class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm">Rp</span>
-                                <input type="number" placeholder="Max" class="w-full pl-9 pr-3 py-2.5 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 transition-all">
+                                <input type="number" 
+                                       placeholder="Max" 
+                                       x-model="maxPrice"
+                                       class="w-full pl-9 pr-3 py-2.5 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 transition-all">
                             </div>
                         </div>
-                        <button class="w-full py-2.5 bg-primary-50 text-primary-700 font-semibold text-sm rounded-lg hover:bg-primary-100 transition-colors flex items-center justify-center gap-2">
+                        <button @click="applyFilters()"
+                                class="w-full py-2.5 bg-primary-50 text-primary-700 font-semibold text-sm rounded-lg hover:bg-primary-100 transition-colors flex items-center justify-center gap-2">
                             <i class="ph ph-check-circle"></i>
                             Terapkan Harga
                         </button>
@@ -138,10 +180,10 @@ $totalProducts = $products->total() ?? 0;
                 </div>
                 
                 {{-- Reset Filter --}}
-                <a href="{{ route('user.produk.index') }}" class="flex items-center justify-center gap-2 w-full py-3 text-sm font-semibold text-gray-600 bg-white border border-gray-200 rounded-xl hover:bg-gray-50 hover:border-gray-300 transition-all duration-200 shadow-sm hover:shadow-md">
+                <button @click="resetFilters()" class="flex items-center justify-center gap-2 w-full py-3 text-sm font-semibold text-gray-600 bg-white border border-gray-200 rounded-xl hover:bg-gray-50 hover:border-gray-300 transition-all duration-200 shadow-sm hover:shadow-md">
                     <i class="ph ph-arrow-counter-clockwise"></i>
                     Reset Semua Filter
-                </a>
+                </button>
                 
                 {{-- Help Card --}}
                 <div class="card-featured p-5 bg-gradient-to-br from-primary-50 to-primary-100/50 border-primary-200">
@@ -163,8 +205,17 @@ $totalProducts = $products->total() ?? 0;
         </aside>
         
         {{-- Product Grid Area --}}
-        <div class="flex-1">
-            <div class="card-featured p-5 md:p-6">
+        <div class="flex-1 relative">
+            {{-- Loading Overlay --}}
+            <div x-show="loading" x-cloak 
+                 class="absolute inset-0 z-20 bg-white/60 backdrop-blur-[2px] flex items-center justify-center rounded-2xl transition-all duration-300">
+                <div class="flex flex-col items-center gap-4">
+                    <x-loading-spinner size="lg" class="text-primary-600" />
+                    <p class="text-sm font-semibold text-primary-800 animate-pulse">Memuat produk...</p>
+                </div>
+            </div>
+
+            <div class="card-featured p-5 md:p-6" :class="loading ? 'opacity-50 grayscale-[0.2] pointer-events-none' : ''">
                 {{-- Grid Header --}}
                 <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6 pb-6 border-b border-gray-100">
                     <div class="flex items-center gap-3">
@@ -184,12 +235,13 @@ $totalProducts = $products->total() ?? 0;
                         <span class="text-sm text-gray-500 hidden sm:inline">Urutkan:</span>
                         <div class="relative">
                             <select name="sort" 
-                                    onchange="window.location.href = this.value"
+                                    x-model="sort"
+                                    @change="applyFilters()"
                                     class="appearance-none bg-gray-50 border border-gray-200 text-gray-900 text-sm rounded-xl pl-4 pr-10 py-3 focus:outline-none focus:border-primary-500 focus:ring-4 focus:ring-primary-500/20 cursor-pointer font-medium min-w-[160px]">
-                                <option value="{{ request()->fullUrlWithQuery(['sort' => 'terbaru']) }}" {{ $currentSort == 'terbaru' ? 'selected' : '' }}>Terbaru</option>
-                                <option value="{{ request()->fullUrlWithQuery(['sort' => 'terlaris']) }}" {{ $currentSort == 'terlaris' ? 'selected' : '' }}>Terlaris</option>
-                                <option value="{{ request()->fullUrlWithQuery(['sort' => 'harga-tertinggi']) }}" {{ $currentSort == 'harga-tertinggi' ? 'selected' : '' }}>Harga Tertinggi</option>
-                                <option value="{{ request()->fullUrlWithQuery(['sort' => 'harga-terendah']) }}" {{ $currentSort == 'harga-terendah' ? 'selected' : '' }}>Harga Terendah</option>
+                                <option value="terbaru">Terbaru</option>
+                                <option value="terlaris">Terlaris</option>
+                                <option value="harga-tertinggi">Harga Tertinggi</option>
+                                <option value="harga-terendah">Harga Terendah</option>
                             </select>
                             <i class="ph ph-caret-down absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none"></i>
                         </div>
@@ -274,26 +326,32 @@ $totalProducts = $products->total() ?? 0;
                         Kategori
                     </h3>
                     <div class="space-y-1">
-                        <a href="{{ route('user.produk.index') }}" 
-                           class="flex items-center justify-between px-4 py-3 rounded-xl text-sm {{ !$currentCategory ? 'bg-primary-50 text-primary-700 font-semibold' : 'text-gray-600 hover:bg-gray-50' }}">
+                        <button @click="category = ''" 
+                           class="w-full flex items-center justify-between px-4 py-3 rounded-xl text-sm"
+                           :class="!category ? 'bg-primary-50 text-primary-700 font-semibold' : 'text-gray-600 hover:bg-gray-50'">
                             <div class="flex items-center gap-3">
-                                <div class="w-8 h-8 {{ !$currentCategory ? 'bg-primary-100' : 'bg-gray-100' }} rounded-lg flex items-center justify-center">
-                                    <i class="ph ph-apps {{ !$currentCategory ? 'text-primary-600' : 'text-gray-400' }}"></i>
+                                <div class="w-8 h-8 rounded-lg flex items-center justify-center"
+                                     :class="!category ? 'bg-primary-100' : 'bg-gray-100'">
+                                    <i class="ph ph-apps" :class="!category ? 'text-primary-600' : 'text-gray-400'"></i>
                                 </div>
                                 <span>Semua Kategori</span>
                             </div>
-                        </a>
+                        </button>
                         @foreach($categories as $category)
-                        <a href="{{ route('user.produk.index', ['kategori' => $category->slug]) }}" 
-                           class="flex items-center justify-between px-4 py-3 rounded-xl text-sm {{ $currentCategory == $category->slug ? 'bg-primary-50 text-primary-700 font-semibold' : 'text-gray-600 hover:bg-gray-50' }}">
+                        <button @click="category = '{{ $category->slug }}'" 
+                           class="w-full flex items-center justify-between px-4 py-3 rounded-xl text-sm"
+                           :class="category == '{{ $category->slug }}' ? 'bg-primary-50 text-primary-700 font-semibold' : 'text-gray-600 hover:bg-gray-50'">
                             <div class="flex items-center gap-3">
-                                <div class="w-8 h-8 {{ $currentCategory == $category->slug ? 'bg-primary-100' : 'bg-gray-100' }} rounded-lg flex items-center justify-center">
-                                    <i class="ph {{ $category->icon ?? 'ph-package' }} {{ $currentCategory == $category->slug ? 'text-primary-600' : 'text-gray-400' }}"></i>
+                                <div class="w-8 h-8 rounded-lg flex items-center justify-center"
+                                     :class="category == '{{ $category->slug }}' ? 'bg-primary-100' : 'bg-gray-100'">
+                                    <i class="ph {{ $category->icon ?? 'ph-package' }}" 
+                                       :class="category == '{{ $category->slug }}' ? 'text-primary-600' : 'text-gray-400'"></i>
                                 </div>
                                 <span>{{ $category->name }}</span>
                             </div>
-                            <span class="text-xs {{ $currentCategory == $category->slug ? 'bg-primary-100 text-primary-700' : 'bg-gray-100 text-gray-500' }} px-2 py-1 rounded-full font-semibold">{{ $categoryCounts[$category->slug] ?? 0 }}</span>
-                        </a>
+                            <span class="text-xs px-2 py-1 rounded-full font-semibold"
+                                  :class="category == '{{ $category->slug }}' ? 'bg-primary-100 text-primary-700' : 'bg-gray-100 text-gray-500'">{{ $categoryCounts[$category->slug] ?? 0 }}</span>
+                        </button>
                         @endforeach
                     </div>
                 </div>
@@ -309,11 +367,17 @@ $totalProducts = $products->total() ?? 0;
                     <div class="space-y-3">
                         <div class="relative">
                             <span class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm">Rp</span>
-                            <input type="number" placeholder="Harga Minimum" class="w-full pl-10 pr-3 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 transition-all">
+                            <input type="number" 
+                                   placeholder="Harga Minimum" 
+                                   x-model="minPrice"
+                                   class="w-full pl-10 pr-3 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 transition-all">
                         </div>
                         <div class="relative">
                             <span class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm">Rp</span>
-                            <input type="number" placeholder="Harga Maksimum" class="w-full pl-10 pr-3 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 transition-all">
+                            <input type="number" 
+                                   placeholder="Harga Maksimum" 
+                                   x-model="maxPrice"
+                                   class="w-full pl-10 pr-3 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 transition-all">
                         </div>
                     </div>
                 </div>
@@ -336,31 +400,32 @@ $totalProducts = $products->total() ?? 0;
                         ];
                         @endphp
                         @foreach($sortOptions as $value => $option)
-                        <a href="{{ request()->fullUrlWithQuery(['sort' => $value]) }}" 
-                           class="flex items-center gap-3 px-4 py-3 rounded-xl text-sm {{ $currentSort == $value ? 'bg-primary-50 text-primary-700 font-semibold' : 'text-gray-600 hover:bg-gray-50' }}">
-                            <div class="w-8 h-8 {{ $currentSort == $value ? 'bg-primary-100' : 'bg-gray-100' }} rounded-lg flex items-center justify-center">
-                                <i class="ph {{ $option['icon'] }} {{ $currentSort == $value ? 'text-primary-600' : 'text-gray-400' }}"></i>
+                        <button @click="sort = '{{ $value }}'" 
+                           class="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm transition-all"
+                           :class="sort == '{{ $value }}' ? 'bg-primary-50 text-primary-700 font-semibold' : 'text-gray-600 hover:bg-gray-50'">
+                            <div class="w-8 h-8 rounded-lg flex items-center justify-center"
+                                 :class="sort == '{{ $value }}' ? 'bg-primary-100' : 'bg-gray-100'">
+                                <i class="ph {{ $option['icon'] }}" 
+                                   :class="sort == '{{ $value }}' ? 'text-primary-600' : 'text-gray-400'"></i>
                             </div>
                             <span>{{ $option['label'] }}</span>
-                            @if($currentSort == $value)
-                                <i class="ph ph-check-circle text-primary-600 ml-auto"></i>
-                            @endif
-                        </a>
+                            <i x-show="sort == '{{ $value }}'" class="ph ph-check-circle text-primary-600 ml-auto"></i>
+                        </button>
                         @endforeach
                     </div>
                 </div>
                 
                 {{-- Apply Button --}}
                 <div class="pt-4 border-t border-gray-100">
-                    <button @click="filterOpen = false" 
+                    <button @click="applyFilters()" 
                             class="w-full py-3.5 bg-gradient-to-r from-primary-600 to-primary-700 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center gap-2">
                         <i class="ph ph-check-circle text-lg"></i>
                         Terapkan Filter
                     </button>
-                    <a href="{{ route('user.produk.index') }}" class="mt-3 w-full py-3 bg-gray-100 text-gray-700 font-semibold rounded-xl hover:bg-gray-200 transition-colors flex items-center justify-center gap-2">
+                    <button @click="resetFilters()" class="mt-3 w-full py-3 bg-gray-100 text-gray-700 font-semibold rounded-xl hover:bg-gray-200 transition-colors flex items-center justify-center gap-2">
                         <i class="ph ph-arrow-counter-clockwise"></i>
                         Reset Filter
-                    </a>
+                    </button>
                 </div>
             </div>
         </div>

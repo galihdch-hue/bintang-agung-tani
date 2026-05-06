@@ -5,12 +5,12 @@ $navItems = $type === 'admin' ? [
     ['label' => 'Dashboard', 'icon' => 'ph-chart-pie-slice', 'href' => '/admin/dashboard'],
     ['label' => 'Produk', 'icon' => 'ph-package', 'href' => '/admin/produk'],
     ['label' => 'Pesanan', 'icon' => 'ph-clipboard-text', 'href' => '/admin/pesanan'],
-    ['label' => 'Akun', 'icon' => 'ph-user', 'href' => '/admin/profile'],
+    ['label' => 'Akun', 'icon' => 'ph-user', 'href' => '/admin/profil'],
 ] : [
     ['label' => 'Dashboard', 'icon' => 'ph-squares-four', 'href' => '/user/dashboard'],
     ['label' => 'Produk', 'icon' => 'ph-storefront', 'href' => '/user/produk'],
     ['label' => 'Keranjang', 'icon' => 'ph-shopping-cart', 'href' => '/user/keranjang'],
-    ['label' => 'Akun', 'icon' => 'ph-user', 'href' => '/user/profile'],
+    ['label' => 'Akun', 'icon' => 'ph-user', 'href' => '/user/profil'],
 ];
 @endphp
 

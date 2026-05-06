@@ -26,6 +26,25 @@ class ProductController extends Controller
             }
         }
 
+        // Price Range
+        if ($request->filled('min_price')) {
+            $query->where(function($q) use ($request) {
+                $q->where('discount_price', '>=', $request->min_price)
+                  ->orWhere(function($sq) use ($request) {
+                      $sq->whereNull('discount_price')->where('price', '>=', $request->min_price);
+                  });
+            });
+        }
+
+        if ($request->filled('max_price')) {
+            $query->where(function($q) use ($request) {
+                $q->where('discount_price', '<=', $request->max_price)
+                  ->orWhere(function($sq) use ($request) {
+                      $sq->whereNull('discount_price')->where('price', '<=', $request->max_price);
+                  });
+            });
+        }
+
         // Search
         if ($request->has('search') && $request->input('search')) {
             $query->search($request->input('search'));
