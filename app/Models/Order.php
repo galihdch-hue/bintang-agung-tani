@@ -313,8 +313,11 @@ class Order extends Model
     if (empty($this->qr_code_path)) {
       return null;
     }
-
-    return Storage::disk('public')->url($this->qr_code_path);
+    // Return a host-relative storage path so the browser will request
+    // the image from the same host and port as the application.
+    // This avoids mismatches when APP_URL does not include the
+    // development server port (e.g. php artisan serve).
+    return '/storage/' . ltrim($this->qr_code_path, '/');
   }
 
   public function getInvoiceUrl(): ?string
