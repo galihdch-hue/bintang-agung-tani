@@ -126,6 +126,12 @@ class PaymentProofService
         $order->status = Order::STATUS_PROCESSING;
         $order->save();
 
+        // Generate QR code for pickup
+        if (empty($order->qr_code_path)) {
+            $qrService = app(QRCodeService::class);
+            $qrService->generateForOrder($order);
+        }
+
         $order->statusHistories()->create([
             'status' => Order::STATUS_PROCESSING,
             'previous_status' => $previousStatus,

@@ -305,11 +305,11 @@ Route::prefix('admin')->middleware(['auth', 'admin'])->group(function () {
   Route::get('/notifications', [NotificationController::class, 'index'])->name('admin.notifications.index');
   Route::get('/notifications/unread', [NotificationController::class, 'unread'])->name('admin.notifications.unread');
   Route::post('/notifications/mark-all-read', [NotificationController::class, 'markAllAsRead'])->name('admin.notifications.mark-all-read');
-  Route::patch('/notifications/{id}/mark-read', [NotificationController::class, 'markAsRead'])->name('admin.notifications.mark-read');
-  Route::delete('/notifications/{id}', [NotificationController::class, 'destroy'])->name('admin.notifications.destroy');
   Route::delete('/notifications/delete-all', [NotificationController::class, 'deleteAll'])->name('admin.notifications.delete-all');
   Route::get('/notifications/delete-all', function() {
       return redirect()->route('admin.notifications.index');
   });
+  Route::patch('/notifications/{id}/mark-read', [NotificationController::class, 'markAsRead'])->name('admin.notifications.mark-read');
+  Route::delete('/notifications/{id}', [NotificationController::class, 'destroy'])->name('admin.notifications.destroy');
 
 });

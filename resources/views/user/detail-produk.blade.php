@@ -71,8 +71,8 @@
                     <!-- Main Image -->
                     <div class="w-full bg-gray-50 rounded-xl border border-gray-100 flex items-center justify-center p-4 sm:p-6 min-h-[320px] sm:min-h-[400px]">
                         @php
-                            $images = $product->getImages() ?? [];
-                            $firstImage = $images[0] ?? $product->getFirstImage();
+                            $images = array_map(fn($img) => str_starts_with($img, 'http') ? $img : asset($img), $product->getImages() ?? []);
+                            $firstImage = $images[0] ?? ($product->getFirstImage() ? asset($product->getFirstImage()) : null);
                             $altText = $product->name . ($product->category ? ' - ' . $product->category->name : '');
                         @endphp
                         @if($firstImage)
@@ -93,7 +93,7 @@
                         @empty
                             @if($product->getFirstImage())
                                 <button class="w-20 h-20 sm:w-24 sm:h-24 shrink-0 rounded-lg border-2 border-primary-500 bg-gray-50 p-2 flex items-center justify-center focus:outline-none">
-                                    <img loading="lazy" src="{{ $product->getFirstImage() }}" alt="{{ $product->name }}" class="max-w-full max-h-full w-auto h-auto object-contain rounded-lg">
+                                    <img loading="lazy" src="{{ asset($product->getFirstImage()) }}" alt="{{ $product->name }}" class="max-w-full max-h-full w-auto h-auto object-contain rounded-lg">
                                 </button>
                             @endif
                         @endforelse
@@ -203,7 +203,7 @@
                             <a href="{{ route('user.produk.show', $related->slug) }}" class="flex items-center gap-4 hover:bg-gray-50 transition-colors p-2 -m-2 rounded-lg group">
                                 <div class="w-16 h-16 bg-gray-50 border border-gray-100 rounded-lg shrink-0 flex items-center justify-center p-1.5">
                                     @if($related->getFirstImage())
-                                        <img loading="lazy" src="{{ $related->getFirstImage() }}" alt="{{ $related->name }}" class="w-full h-full object-cover rounded-md">
+                                        <img loading="lazy" src="{{ asset($related->getFirstImage()) }}" alt="{{ $related->name }}" class="w-full h-full object-cover rounded-md">
                                     @else
                                         <i class="ph ph-image ph-fill w-6 h-6 text-gray-300"></i>
                                     @endif

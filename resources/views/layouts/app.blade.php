@@ -38,12 +38,12 @@ use App\Models\Setting;
         .animate-fade-in { animation: fade-in 0.2s ease-out; }
     </style>
 </head>
-<body class="font-sans antialiased text-gray-800 bg-gradient-to-br from-gray-50 via-primary-50/10 to-primary-50/20">
+<body class="font-sans antialiased text-gray-800 bg-gray-50">
     <a href="#main-content" class="skip-to-content">Skip to main content</a>
-    <div class="min-h-screen flex flex-col bg-gradient-to-br from-gray-50 via-primary-50/10 to-primary-50/20">
+    <div class="min-h-screen flex flex-col">
         @include('components.navbar')
 
-        <main id="main-content" class="flex-1 w-full bg-gradient-to-br from-gray-50 via-primary-50/10 to-primary-50/20" role="main">
+        <main id="main-content" class="flex-1 w-full" role="main">
             <div class="p-4 md:p-6 lg:p-8 max-w-7xl mx-auto">
                 @yield('content')
             </div>

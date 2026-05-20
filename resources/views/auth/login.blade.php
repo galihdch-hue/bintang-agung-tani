@@ -7,11 +7,18 @@
     
     <!-- Left Side: Brand Showcase with Logo -->
     <div class="hidden lg:flex lg:w-5/12 xl:w-1/3 relative overflow-hidden">
-        <!-- Background: Same gradient as navbar -->
-        <div class="absolute inset-0 bg-gradient-to-br from-primary-800 via-primary-700 to-primary-800"></div>
+        <!-- Background: Rice Field Image -->
+        <div class="absolute inset-0">
+            <img src="https://images.unsplash.com/photo-1500937386664-56d1dfef3854?w=800&q=80" 
+                 alt="Sawah" 
+                 class="w-full h-full object-cover">
+        </div>
         
-        <!-- Subtle Pattern -->
-        <div class="absolute inset-0 opacity-5" style="background-image: radial-gradient(circle at 2px 2px, rgba(255,255,255,0.2) 1px, transparent 0); background-size: 40px 40px;"></div>
+        <!-- Dark Overlay for better text contrast - lighter so image shows -->
+        <div class="absolute inset-0 bg-gradient-to-br from-primary-900/50 via-primary-800/35 to-primary-900/50"></div>
+        
+        <!-- Subtle Pattern Overlay -->
+        <div class="absolute inset-0 opacity-10" style="background-image: radial-gradient(circle at 2px 2px, rgba(255,255,255,0.3) 1px, transparent 0); background-size: 32px 32px;"></div>
         
         <!-- Content Container -->
         <div class="relative z-10 flex flex-col justify-between h-full p-8 xl:p-12">
@@ -58,7 +65,14 @@
     </div>
     
     <!-- Right Side: Login Form -->
-    <div class="flex-1 flex flex-col justify-center items-center px-4 sm:px-6 lg:px-8 py-12 lg:py-0 bg-gradient-to-b from-gray-50 via-white to-primary-50/30">
+    <div class="flex-1 flex flex-col justify-center items-center px-4 sm:px-6 lg:px-8 py-12 lg:py-0 relative overflow-hidden">
+        <!-- Subtle Background Pattern -->
+        <div class="absolute inset-0 bg-gradient-to-br from-gray-50 via-white to-primary-50/20"></div>
+        <div class="absolute top-0 right-0 w-96 h-96 bg-primary-100/30 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2"></div>
+        <div class="absolute bottom-0 left-0 w-72 h-72 bg-primary-50/40 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2"></div>
+        
+        <!-- Content (above background) -->
+        <div class="relative z-10 w-full max-w-md">
         
         <!-- Mobile Logo -->
         <div class="lg:hidden mb-8 text-center">
@@ -166,7 +180,7 @@
                     <div class="w-full border-t border-gray-200"></div>
                 </div>
                 <div class="relative flex justify-center">
-                    <span class="bg-gradient-to-b from-gray-50 via-white to-primary-50/30 px-4 text-sm text-gray-400">atau</span>
+                    <span class="bg-white px-4 text-sm text-gray-400">atau</span>
                 </div>
             </div>
             
@@ -184,6 +198,7 @@
             <p class="text-center text-xs text-gray-400 mt-8">
                 © {{ date('Y') }} {{ config('app.store_name', 'Bintang Agung Tani') }}
             </p>
+        </div>
         </div>
     </div>
 </div>

@@ -85,6 +85,11 @@ class VerificationController extends Controller
                     $paymentModel->order->status = Order::STATUS_PROCESSING;
                     $paymentModel->order->save();
 
+                    // Generate QR code for pickup
+                    if (empty($paymentModel->order->qr_code_path)) {
+                        app(\App\Services\QRCodeService::class)->generateForOrder($paymentModel->order);
+                    }
+
                     $paymentModel->order->statusHistories()->create([
                         'status' => Order::STATUS_PROCESSING,
                         'previous_status' => $previousStatus,

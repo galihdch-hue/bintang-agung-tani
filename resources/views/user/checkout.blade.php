@@ -346,7 +346,7 @@
                                                     class="w-16 h-16 shrink-0 bg-gray-50 border border-gray-100 rounded-xl p-1.5 flex items-center justify-center overflow-hidden">
                                                     @if ($cartItem->product && $cartItem->product->getFirstImage())
                                                         <img loading="lazy"
-                                                            src="{{ $cartItem->product->getFirstImage() }}"
+                                                            src="{{ asset($cartItem->product->getFirstImage()) }}"
                                                             alt="{{ $cartItem->product_name }}"
                                                             class="w-full h-full object-cover rounded-lg mix-blend-multiply group-hover:scale-105 transition-transform duration-300">
                                                     @else

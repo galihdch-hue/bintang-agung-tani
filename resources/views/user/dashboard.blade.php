@@ -10,6 +10,18 @@ $authUser = auth()->user();
 <div class="space-y-6">
     {{-- Welcome Banner --}}
     <div class="relative bg-gradient-to-r from-primary-600 to-primary-700 rounded-2xl overflow-hidden shadow-lg">
+        <!-- Background Image -->
+        <div class="absolute inset-0">
+            <img src="https://images.unsplash.com/photo-1500937386664-56d1dfef3854?w=1200&q=80" 
+                 alt="Sawah" 
+                 class="w-full h-full object-cover">
+        </div>
+        <!-- Gradient Overlay - lighter so image shows through -->
+        <div class="absolute inset-0 bg-gradient-to-r from-primary-800/60 via-primary-700/40 to-primary-600/50"></div>
+        <!-- Decorative Elements -->
+        <div class="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full -translate-y-1/2 translate-x-1/2 blur-2xl"></div>
+        <div class="absolute bottom-0 left-1/3 w-48 h-48 bg-white/5 rounded-full translate-y-1/2 blur-xl"></div>
+        
         <div class="relative px-6 py-8 sm:px-8 sm:py-10">
             <div class="max-w-2xl">
                 <div class="flex items-center gap-3 mb-4">
@@ -203,7 +215,9 @@ $authUser = auth()->user();
     {{-- Promo Banners --}}
     <section class="grid grid-cols-1 md:grid-cols-3 gap-4">
         {{-- Free Shipping Banner --}}
-        <div class="card bg-gradient-to-br from-blue-500 to-blue-600 p-6 text-white overflow-hidden group hover:shadow-xl transition-all">
+        <div class="card bg-gradient-to-br from-blue-500 to-blue-600 p-6 text-white overflow-hidden group hover:shadow-xl transition-all relative">
+            <div class="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -translate-y-1/2 translate-x-1/2 blur-xl"></div>
+            <div class="absolute bottom-0 left-0 w-24 h-24 bg-white/5 rounded-full translate-y-1/2 -translate-x-1/2 blur-lg"></div>
             <div class="relative z-10">
                 <div class="inline-flex items-center gap-2 px-3 py-1.5 bg-white rounded-full text-sm font-semibold mb-4 text-blue-700">
                     <i class="ph ph-truck w-4 h-4"></i>
@@ -219,7 +233,9 @@ $authUser = auth()->user();
         </div>
         
         {{-- Member Special Banner --}}
-        <div class="card bg-gradient-to-br from-amber-500 to-orange-600 p-6 text-white overflow-hidden group hover:shadow-xl transition-all">
+        <div class="card bg-gradient-to-br from-amber-500 to-orange-600 p-6 text-white overflow-hidden group hover:shadow-xl transition-all relative">
+            <div class="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -translate-y-1/2 translate-x-1/2 blur-xl"></div>
+            <div class="absolute bottom-0 left-0 w-24 h-24 bg-white/5 rounded-full translate-y-1/2 -translate-x-1/2 blur-lg"></div>
             <div class="relative z-10">
                 <div class="inline-flex items-center gap-2 px-3 py-1.5 bg-white rounded-full text-sm font-semibold mb-4 text-amber-700">
                     <i class="ph ph-crown w-4 h-4"></i>
@@ -235,7 +251,9 @@ $authUser = auth()->user();
         </div>
         
         {{-- Support Banner --}}
-        <div class="card bg-gradient-to-br from-primary-500 to-primary-600 p-6 text-white overflow-hidden group hover:shadow-xl transition-all">
+        <div class="card bg-gradient-to-br from-primary-500 to-primary-600 p-6 text-white overflow-hidden group hover:shadow-xl transition-all relative">
+            <div class="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -translate-y-1/2 translate-x-1/2 blur-xl"></div>
+            <div class="absolute bottom-0 left-0 w-24 h-24 bg-white/5 rounded-full translate-y-1/2 -translate-x-1/2 blur-lg"></div>
             <div class="relative z-10">
                 <div class="inline-flex items-center gap-2 px-3 py-1.5 bg-white rounded-full text-sm font-semibold mb-4 text-primary-700">
                     <i class="ph ph-headset w-4 h-4"></i>

@@ -77,7 +77,7 @@ class QRCodeService
         try {
             $data = json_decode($qrData, true, 512, JSON_THROW_ON_ERROR);
 
-            return isset($data['order_id']) && $data['order_id'] === $order->id
+            return isset($data['order_id']) && (int) $data['order_id'] === (int) $order->id
                 && isset($data['order_number']) && $data['order_number'] === $order->order_number;
         } catch (\JsonException $e) {
             return false;
@@ -98,6 +98,12 @@ class QRCodeService
 
             return Order::find($data['order_id']);
         } catch (\JsonException $e) {
+            // Fallback: try as order_number string (e.g. "BAT-20260511-XXXX")
+            $order = Order::where('order_number', trim($qrData))->first();
+            if ($order) {
+                return $order;
+            }
+
             return null;
         }
     }

@@ -43,7 +43,10 @@ if ($variant) {
         {{-- Product Image --}}
         <a href="{{ $href }}" class="block w-full h-full overflow-hidden">
             @if($image)
-                <img src="{{ $image }}" 
+                @php
+                    $imageUrl = str_starts_with($image, 'http') ? $image : asset($image);
+                @endphp
+                <img src="{{ $imageUrl }}" 
                      alt="{{ $altText }}" 
                      class="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-110"
                      loading="lazy"

@@ -26,7 +26,7 @@ class QRScanController extends Controller
         return view('admin.scan-barcode', compact('order'));
     }
 
-    public function scan(Request $request): RedirectResponse
+    public function scan(Request $request): RedirectResponse|\Illuminate\Http\JsonResponse
     {
         $validated = $request->validate([
             'qr_data' => 'required|string',
@@ -38,13 +38,20 @@ class QRScanController extends Controller
         $order = $this->qrCodeService->getOrderFromQrData($qrData);
 
         if (! $order) {
+            if ($request->ajax() || $request->wantsJson()) {
+                return response()->json(['success' => false, 'message' => 'Data QR code tidak valid atau pesanan tidak ditemukan.'], 422);
+            }
             return redirect()
                 ->back()
                 ->with('error', 'Data QR code tidak valid atau pesanan tidak ditemukan.');
         }
 
-        // Validate QR data matches order
-        if (! $this->qrCodeService->isValidOrderData($qrData, $order)) {
+        // Validate QR data matches order (only for JSON format)
+        $isJson = json_decode($qrData) !== null;
+        if ($isJson && ! $this->qrCodeService->isValidOrderData($qrData, $order)) {
+            if ($request->ajax() || $request->wantsJson()) {
+                return response()->json(['success' => false, 'message' => 'Data QR code tidak cocok dengan pesanan.'], 422);
+            }
             return redirect()
                 ->back()
                 ->with('error', 'Data QR code tidak cocok dengan pesanan.');
@@ -52,9 +59,13 @@ class QRScanController extends Controller
 
         // Check if order can be marked as completed
         if ($order->status !== Order::STATUS_PROCESSING) {
+            $msg = "Pesanan tidak dapat diselesaikan. Status saat ini: {$order->getStatusLabel()}. Hanya pesanan yang sedang diproses yang dapat diselesaikan.";
+            if ($request->ajax() || $request->wantsJson()) {
+                return response()->json(['success' => false, 'message' => $msg], 422);
+            }
             return redirect()
                 ->back()
-                ->with('error', "Pesanan tidak dapat diselesaikan. Status saat ini: {$order->getStatusLabel()}. Hanya pesanan yang sedang diproses yang dapat diselesaikan.");
+                ->with('error', $msg);
         }
 
         // Mark order as completed
@@ -68,6 +79,15 @@ class QRScanController extends Controller
         session()->flash('order_id', $order->id);
         session()->flash('scanned_order_id', $order->id);
         session()->flash('order_completed', true);
+
+        if ($request->ajax() || $request->wantsJson()) {
+            return response()->json([
+                'success' => true,
+                'message' => "Pesanan {$order->order_number} berhasil diselesaikan! Status: Selesai.",
+                'order_number' => $order->order_number,
+                'order_id' => $order->id,
+            ]);
+        }
 
         return redirect()
             ->route('admin.orders.show', $order)

@@ -65,7 +65,7 @@
                     {{-- Image --}}
                     <div class="w-20 h-20 bg-white rounded-lg flex-shrink-0 overflow-hidden">
                         @if($item->product && method_exists($item->product, 'getFirstImage') && $item->product->getFirstImage())
-                            <img src="{{ $item->product->getFirstImage() }}" 
+                            <img src="{{ asset($item->product->getFirstImage()) }}" 
                                  alt="{{ $item->product_name }}"
                                  class="w-full h-full object-cover">
                         @else

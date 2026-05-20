@@ -59,11 +59,11 @@ x-transition:leave-end="opacity-0">
         <p class="text-gray-500 text-sm mb-8 leading-relaxed" x-html="message"></p>
         
         <div class="flex flex-col sm:flex-row justify-center gap-3">
-            <button @click="show = false" class="w-full sm:w-1/2 btn-secondary justify-center shadow-sm h-11">
+            <button @click="show = false" class="w-full sm:w-1/2 btn-secondary justify-center shadow-sm h-11 px-4">
                 <span x-text="cancelText"></span>
             </button>
             <button @click="handleConfirm()" 
-                    class="w-full sm:w-1/2 font-bold py-2.5 px-4 rounded-xl transition-all shadow-lg hover:shadow-xl hover:-translate-y-0.5 active:translate-y-px h-11"
+                    class="w-full sm:w-1/2 font-bold py-2.5 px-4 rounded-xl transition-all shadow-lg hover:shadow-xl hover:-translate-y-0.5 active:translate-y-px h-11 text-sm leading-tight break-words"
                     :class="isDestructive ? 'bg-red-600 hover:bg-red-700 text-white' : 'bg-primary-600 hover:bg-primary-700 text-white'">
                 <span x-text="confirmText"></span>
             </button>

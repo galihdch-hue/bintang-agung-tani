@@ -153,7 +153,7 @@
                     @click="$dispatch('confirm-action', { 
                         title: 'Bersihkan Semua?', 
                         message: 'Tindakan ini akan menghapus seluruh riwayat notifikasi secara permanen. Lanjutkan?', 
-                        confirmText: 'Ya, Bersihkan Riwayat', 
+                        confirmText: 'Ya, Bersihkan', 
                         action: () => document.getElementById('delete-all-notifications').submit() 
                     })"
                     class="group flex items-center gap-2 text-[10px] font-black text-gray-400 hover:text-red-600 uppercase tracking-[0.2em] transition-all">

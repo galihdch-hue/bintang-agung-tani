@@ -162,7 +162,7 @@ class CartService
                 'product_id' => $item->product_id,
                 'name' => $product->name,
                 'slug' => $product->slug,
-                'image' => $product->getFirstImage(),
+                'image' => $product->getFirstImage() ? asset($product->getFirstImage()) : null,
                 'unit_price' => (float) $item->unit_price,
                 'original_price' => $product->hasDiscount() ? (float) $product->price : null,
                 'quantity' => $item->quantity,
