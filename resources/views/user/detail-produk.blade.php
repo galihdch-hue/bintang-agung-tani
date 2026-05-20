@@ -175,10 +175,16 @@
                             </button>
                         </form>
                         
-                        <a href="{{ route('user.checkout.index') }}" class="btn-secondary w-full flex items-center justify-center gap-2 py-3">
-                            <i class="ph ph-credit-card w-5 h-5"></i>
-                            Beli Sekarang
-                        </a>
+                        <form action="{{ route('user.cart.add') }}" method="POST" id="buy-now-form">
+                            @csrf
+                            <input type="hidden" name="product_id" value="{{ $product->id }}">
+                            <input type="hidden" name="quantity" x-model="qty">
+                            <input type="hidden" name="redirect_to" value="checkout">
+                            <button type="submit" class="btn-secondary w-full flex items-center justify-center gap-2 py-3">
+                                <i class="ph ph-credit-card w-5 h-5"></i>
+                                Beli Sekarang
+                            </button>
+                        </form>
                     </div>
 
                     <!-- Help Link -->
