@@ -7,7 +7,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../models/models.dart' as models;
 
 class ApiService {
-  static const String baseUrl = 'http://localhost:8000/api';
+  static const String baseUrl = 'https://bintang-agung-tani.center.biz.id';
 
   static Future<String?> getToken() async {
     final prefs = await SharedPreferences.getInstance();
